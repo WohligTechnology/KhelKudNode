@@ -13,7 +13,7 @@ module.exports = {
             if (db) {
                 if (!data._id) {
                     data._id = sails.ObjectID();
-                    db.collection("user").find({
+                    db.collection("team").find({
                         email: data.email
                     }).toArray(function (err, data2) {
                         if (err) {
@@ -308,5 +308,5 @@ module.exports = {
                 });
             }
         });
-    },
+    }
 };

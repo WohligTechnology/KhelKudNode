@@ -28,5 +28,11 @@ module.exports = {
             res.json(data);
         }
         Team.delete(req.body, print);
+    },
+    searchmail: function (req, res) {
+        var print = function (data) {
+            res.json(data);
+        }
+        Team.searchmail(req.body, print);
     }
 };
