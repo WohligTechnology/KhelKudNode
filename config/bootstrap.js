@@ -22,6 +22,7 @@ module.exports.bootstrap = function (cb) {
         sails.Code = require('mongodb').Code,
         sails.assert = require('assert'),
         sails.mime = require('mime'),
+        sails.md5 = require('MD5'),
         sails.moment = require('moment'),
         sails.fs = require('fs'),
         // Connection URL

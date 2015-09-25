@@ -10,7 +10,9 @@ module.exports = {
             if (db) {
                 if (!data._id) {
                     data._id = sails.ObjectID();
-                    db.collection('user').insert(data, function (err, created) {
+                    db.collection("user").find({
+                        email: data.email
+                    }).toArray(function (err, data2) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -18,18 +20,35 @@ module.exports = {
                                 comment: "Error"
                             });
                             db.close();
-                        } else if (created) {
+                        } else if (data2 && data2[0]) {
                             callback({
-                                value: true,
-                                id: data._id
+                                value: false,
+                                comment: "User already exists"
                             });
                             db.close();
                         } else {
-                            callback({
-                                value: false,
-                                comment: "Error"
+                            db.collection('user').insert(data, function (err, created) {
+                                if (err) {
+                                    console.log(err);
+                                    callback({
+                                        value: false,
+                                        comment: "Error"
+                                    });
+                                    db.close();
+                                } else if (created) {
+                                    callback({
+                                        value: true,
+                                        id: data._id
+                                    });
+                                    db.close();
+                                } else {
+                                    callback({
+                                        value: false,
+                                        comment: "Error"
+                                    });
+                                    db.close();
+                                }
                             });
-                            db.close();
                         }
                     });
                 } else {
@@ -251,5 +270,40 @@ module.exports = {
                 comment: "userid Incorrect"
             });
         }
-    }
+    },
+    searchmail: function (data, callback) {
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("user").find({
+                    email: data.email
+                }).toArray(function (err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        callback({
+                            value: true,
+                            comment: "User found"
+                        });
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No user found"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
+    },
 };
