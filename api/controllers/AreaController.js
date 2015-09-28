@@ -1,10 +1,15 @@
-
 module.exports = {
     save: function (req, res) {
         var print = function (data) {
             res.json(data);
         }
         Area.save(req.body, print);
+    },
+    savearea: function (req, res) {
+        var print = function (data) {
+            res.json(data);
+        }
+        Area.savearea(req.body, print);
     },
     find: function (req, res) {
         var print = function (data) {

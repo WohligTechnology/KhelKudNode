@@ -8,108 +8,15 @@ module.exports = {
                 });
             }
             if (db) {
-                if (data.team && sails.ObjectID.isValid(data.team)) {
-                    var team = sails.ObjectID(data.team);
-                    delete data.team;
-                    if (!data._id) {
-                        data._id = sails.ObjectID();
-                        db.collection("team").update({
-                            _id: team
-                        }, {
-                            $push: {
-                                gallery: data
-                            }
-                        }, function (err, updated) {
-                            if (err) {
-                                console.log(err);
-                                callback({
-                                    value: false
-                                });
-                                db.close();
-                            } else if (updated) {
-                                callback({
-                                    value: true
-                                });
-                                db.close();
-                            } else {
-                                callback({
-                                    value: false,
-                                    comment: "No Such gallery"
-                                });
-                                db.close();
-                            }
-                        });
-                    } else {
-                        if (data._id && sails.ObjectID.isValid(data._id)) {
-                            data._id = sails.ObjectID(data._id);
-                            var tobechanged = {};
-                            var attribute = "gallery.$.";
-                            _.forIn(data, function (value, key) {
-                                tobechanged[attribute + key] = value;
-                            });
-                            db.collection("team").update({
-                                "_id": team,
-                                "gallery._id": data._id
-                            }, {
-                                $set: tobechanged
-                            }, function (err, updated) {
-                                if (err) {
-                                    console.log(err);
-                                    callback({
-                                        value: false
-                                    });
-                                    db.close();
-                                } else if (updated) {
-                                    callback({
-                                        value: true
-                                    });
-                                    db.close();
-                                } else {
-                                    callback({
-                                        value: false,
-                                        comment: "No Such gallery"
-                                    });
-                                    db.close();
-                                }
-                            });
-                        } else {
-                            callback({
-                                value: false,
-                                comment: "galleryID incorrect."
-                            });
-                            db.close();
-                        }
-                    }
-                } else {
-                    callback({
-                        value: false,
-                        comment: "teamID Incorrect"
-                    });
-                    db.close();
-                }
-            }
-        });
-    },
-    delete: function (data, callback) {
-        if (data.team && sails.ObjectID.isValid(data.team) && data._id && sails.ObjectID.isValid(data._id)) {
-            var team = sails.ObjectID(data.team);
-            delete data.team;
-            data._id = sails.ObjectID(data._id);
-            sails.query(function (err, db) {
-                if (err) {
-                    console.log(err);
-                    callback({
-                        value: false
-                    });
-                }
-                if (db) {
+                var team = sails.ObjectID(data.team);
+                delete data.team;
+                if (!data._id) {
+                    data._id = sails.ObjectID();
                     db.collection("team").update({
                         _id: team
                     }, {
-                        $pull: {
-                            "gallery": {
-                                "_id": sails.ObjectID(data._id)
-                            }
+                        $push: {
+                            gallery: data
                         }
                     }, function (err, updated) {
                         if (err) {
@@ -126,19 +33,89 @@ module.exports = {
                         } else {
                             callback({
                                 value: false,
-                                comment: "No such gallery."
+                                comment: "No Such gallery"
+                            });
+                            db.close();
+                        }
+                    });
+                } else {
+                    data._id = sails.ObjectID(data._id);
+                    var tobechanged = {};
+                    var attribute = "gallery.$.";
+                    _.forIn(data, function (value, key) {
+                        tobechanged[attribute + key] = value;
+                    });
+                    db.collection("team").update({
+                        "_id": team,
+                        "gallery._id": data._id
+                    }, {
+                        $set: tobechanged
+                    }, function (err, updated) {
+                        if (err) {
+                            console.log(err);
+                            callback({
+                                value: false
+                            });
+                            db.close();
+                        } else if (updated) {
+                            callback({
+                                value: true
+                            });
+                            db.close();
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "No Such gallery"
                             });
                             db.close();
                         }
                     });
                 }
-            });
-        } else {
-            callback({
-                value: false,
-                comment: "teamid or galleryid incorrect."
-            });
-        }
+            }
+        });
+    },
+    delete: function (data, callback) {
+        var team = sails.ObjectID(data.team);
+        delete data.team;
+        data._id = sails.ObjectID(data._id);
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("team").update({
+                    _id: team
+                }, {
+                    $pull: {
+                        "gallery": {
+                            "_id": sails.ObjectID(data._id)
+                        }
+                    }
+                }, function (err, updated) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (updated) {
+                        callback({
+                            value: true
+                        });
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No such gallery."
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
     },
     //Findlimited
     findlimited: function (data, callback) {
@@ -265,102 +242,88 @@ module.exports = {
     },
     //Findlimited
     findone: function (data, callback) {
-        if (data.team && sails.ObjectID.isValid(data.team) && data._id && sails.ObjectID.isValid(data._id)) {
-            var team = sails.ObjectID(data.team);
-            sails.query(function (err, db) {
-                if (err) {
-                    console.log(err);
-                    callback({
-                        value: false
-                    });
-                }
-                if (db) {
-                    db.collection("team").find({
-                        _id: team,
-                        "gallery._id": sails.ObjectID(data._id)
-                    }, {
-                        "gallery.$": 1
-                    }).toArray(function (err, data2) {
-                        if (data2 && data2[0] && data2[0].gallery && data2[0].gallery[0]) {
-                            callback(data2[0].gallery[0]);
-                            db.close();
-                        } else if (err) {
-                            console.log(err);
-                            callback({
-                                value: false
-                            });
-                            db.close();
-                        } else {
-                            callback({
-                                value: false,
-                                comment: "No Such gallery."
-                            });
-                            db.close();
-                        }
-                    });
-                }
-            });
-        } else {
-            callback({
-                value: false,
-                comment: "teamid or galleryid incorrect."
-            });
-        }
+        var team = sails.ObjectID(data.team);
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("team").find({
+                    _id: team,
+                    "gallery._id": sails.ObjectID(data._id)
+                }, {
+                    "gallery.$": 1
+                }).toArray(function (err, data2) {
+                    if (data2 && data2[0] && data2[0].gallery && data2[0].gallery[0]) {
+                        callback(data2[0].gallery[0]);
+                        db.close();
+                    } else if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No Such gallery."
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
     },
     find: function (data, callback) {
-        if (data.team && sails.ObjectID.isValid(data.team)) {
-            var team = sails.ObjectID(data.team);
-            sails.query(function (err, db) {
-                if (err) {
-                    console.log(err);
-                    callback({
-                        value: false
-                    });
-                }
-                if (db) {
-                    db.collection("team").aggregate([{
-                        $match: {
-                            _id: team,
-                            "gallery.name": {
-                                $exists: true
-                            }
+        var team = sails.ObjectID(data.team);
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("team").aggregate([{
+                    $match: {
+                        _id: team,
+                        "gallery.name": {
+                            $exists: true
                         }
+                    }
         }, {
-                        $unwind: "$gallery"
+                    $unwind: "$gallery"
         }, {
-                        $match: {
-                            "gallery.name": {
-                                $exists: true
-                            }
+                    $match: {
+                        "gallery.name": {
+                            $exists: true
                         }
+                    }
         }, {
-                        $project: {
-                            gallery: 1
-                        }
+                    $project: {
+                        gallery: 1
+                    }
         }]).toArray(function (err, data2) {
-                        if (data2 && data2[0] && data2[0].gallery && data2[0].gallery[0]) {
-                            callback(data2);
-                            db.close();
-                        } else if (err) {
-                            console.log(err);
-                            callback({
-                                value: false
-                            });
-                            db.close();
-                        } else {
-                            callback({
-                                value: false
-                            });
-                            db.close();
-                        }
-                    });
-                }
-            });
-        } else {
-            callback({
-                value: false,
-                comment: "teamid Incorrect."
-            });
-        }
+                    if (data2 && data2[0] && data2[0].gallery && data2[0].gallery[0]) {
+                        callback(data2);
+                        db.close();
+                    } else if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else {
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
     }
 };

@@ -52,7 +52,6 @@ module.exports = {
                         }
                     });
                 } else {
-                    if (data._id && sails.ObjectID.isValid(data._id)) {
                         var user = sails.ObjectID(data._id);
                         delete data._id
                         db.collection('user').update({
@@ -80,13 +79,6 @@ module.exports = {
                                 db.close();
                             }
                         });
-                    } else {
-                        callback({
-                            value: false,
-                            comment: "userid Incorrect"
-                        });
-                        db.close();
-                    }
                 }
             }
         });
@@ -193,7 +185,6 @@ module.exports = {
     },
     //Findlimited
     findone: function (data, callback) {
-        if (data._id && sails.ObjectID.isValid(data._id)) {
             sails.query(function (err, db) {
                 if (err) {
                     console.log(err);
@@ -225,15 +216,8 @@ module.exports = {
                     });
                 }
             });
-        } else {
-            callback({
-                value: false,
-                comment: "userid incorrect."
-            });
-        }
     },
     delete: function (data, callback) {
-        if (data._id && sails.ObjectID.isValid(data._id)) {
             sails.query(function (err, db) {
                 if (err) {
                     console.log(err);
@@ -264,12 +248,6 @@ module.exports = {
                     }
                 });
             });
-        } else {
-            callback({
-                value: false,
-                comment: "userid Incorrect"
-            });
-        }
     },
     searchmail: function (data, callback) {
         sails.query(function (err, db) {

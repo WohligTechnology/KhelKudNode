@@ -33,41 +33,33 @@ module.exports = {
                         }
                     });
                 } else {
-                    if (data._id && sails.ObjectID.isValid(data._id)) {
-                        var news = sails.ObjectID(data._id);
-                        delete data._id
-                        db.collection('news').update({
-                            _id: news
-                        }, {
-                            $set: data
-                        }, function (err, updated) {
-                            if (err) {
-                                console.log(err);
-                                callback({
-                                    value: false,
-                                    comment: "Error"
-                                });
-                                db.close();
-                            } else if (updated) {
-                                callback({
-                                    value: true
-                                });
-                                db.close();
-                            } else {
-                                callback({
-                                    value: false,
-                                    comment: "Error"
-                                });
-                                db.close();
-                            }
-                        });
-                    } else {
-                        callback({
-                            value: false,
-                            comment: "newsid Incorrect"
-                        });
-                        db.close();
-                    }
+                    var news = sails.ObjectID(data._id);
+                    delete data._id
+                    db.collection('news').update({
+                        _id: news
+                    }, {
+                        $set: data
+                    }, function (err, updated) {
+                        if (err) {
+                            console.log(err);
+                            callback({
+                                value: false,
+                                comment: "Error"
+                            });
+                            db.close();
+                        } else if (updated) {
+                            callback({
+                                value: true
+                            });
+                            db.close();
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "Error"
+                            });
+                            db.close();
+                        }
+                    });
                 }
             }
         });
@@ -174,67 +166,26 @@ module.exports = {
     },
     //Findlimited
     findone: function (data, callback) {
-        if (data._id && sails.ObjectID.isValid(data._id)) {
-            sails.query(function (err, db) {
-                if (err) {
-                    console.log(err);
-                    callback({
-                        value: false
-                    });
-                }
-                if (db) {
-                    db.collection("news").find({
-                        _id: sails.ObjectID(data._id)
-                    }).toArray(function (err, data2) {
-                        if (err) {
-                            console.log(err);
-                            callback({
-                                value: false
-                            });
-                            db.close();
-                        } else if (data2 && data2[0]) {
-                            delete data2[0].password;
-                            callback(data2[0]);
-                            db.close();
-                        } else {
-                            callback({
-                                value: false,
-                                comment: "news not found"
-                            });
-                            db.close();
-                        }
-                    });
-                }
-            });
-        } else {
-            callback({
-                value: false,
-                comment: "newsid incorrect."
-            });
-        }
-    },
-    delete: function (data, callback) {
-        if (data._id && sails.ObjectID.isValid(data._id)) {
-            sails.query(function (err, db) {
-                if (err) {
-                    console.log(err);
-                    callback({
-                        value: false
-                    });
-                }
-                db.collection('news').remove({
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("news").find({
                     _id: sails.ObjectID(data._id)
-                }, function (err, deleted) {
-                    if (deleted) {
-                        callback({
-                            value: true
-                        });
-                        db.close();
-                    } else if (err) {
+                }).toArray(function (err, data2) {
+                    if (err) {
                         console.log(err);
                         callback({
                             value: false
                         });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        delete data2[0].password;
+                        callback(data2[0]);
                         db.close();
                     } else {
                         callback({
@@ -244,12 +195,39 @@ module.exports = {
                         db.close();
                     }
                 });
+            }
+        });
+    },
+    delete: function (data, callback) {
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            db.collection('news').remove({
+                _id: sails.ObjectID(data._id)
+            }, function (err, deleted) {
+                if (deleted) {
+                    callback({
+                        value: true
+                    });
+                    db.close();
+                } else if (err) {
+                    console.log(err);
+                    callback({
+                        value: false
+                    });
+                    db.close();
+                } else {
+                    callback({
+                        value: false,
+                        comment: "news not found"
+                    });
+                    db.close();
+                }
             });
-        } else {
-            callback({
-                value: false,
-                comment: "newsid Incorrect"
-            });
-        }
+        });
     }
 };

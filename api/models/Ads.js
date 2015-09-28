@@ -33,7 +33,6 @@ module.exports = {
                         }
                     });
                 } else {
-                    if (data._id && sails.ObjectID.isValid(data._id)) {
                         var ads = sails.ObjectID(data._id);
                         delete data._id
                         db.collection('ads').update({
@@ -61,13 +60,6 @@ module.exports = {
                                 db.close();
                             }
                         });
-                    } else {
-                        callback({
-                            value: false,
-                            comment: "adsid Incorrect"
-                        });
-                        db.close();
-                    }
                 }
             }
         });
@@ -174,7 +166,6 @@ module.exports = {
     },
     //Findlimited
     findone: function (data, callback) {
-        if (data._id && sails.ObjectID.isValid(data._id)) {
             sails.query(function (err, db) {
                 if (err) {
                     console.log(err);
@@ -206,12 +197,6 @@ module.exports = {
                     });
                 }
             });
-        } else {
-            callback({
-                value: false,
-                comment: "adsid incorrect."
-            });
-        }
     },
     delete: function (data, callback) {
         if (data._id && sails.ObjectID.isValid(data._id)) {

@@ -47,41 +47,33 @@ module.exports = {
                         }
                     });
                 } else {
-                    if (data._id && sails.ObjectID.isValid(data._id)) {
-                        var subsports = sails.ObjectID(data._id);
-                        delete data._id;
-                        db.collection('subsports').update({
-                            _id: subsports
-                        }, {
-                            $set: data
-                        }, function (err, updated) {
-                            if (err) {
-                                console.log(err);
-                                callback({
-                                    value: false
-                                });
-                                db.close();
-                            } else if (updated) {
-                                callback({
-                                    value: true,
-                                    id: data._id
-                                });
-                                db.close();
-                            } else {
-                                callback({
-                                    value: false,
-                                    comment: "Not updated"
-                                });
-                                db.close();
-                            }
-                        });
-                    } else {
-                        callback({
-                            value: false,
-                            comment: "Id incorrect"
-                        });
-                        db.close();
-                    }
+                    var subsports = sails.ObjectID(data._id);
+                    delete data._id;
+                    db.collection('subsports').update({
+                        _id: subsports
+                    }, {
+                        $set: data
+                    }, function (err, updated) {
+                        if (err) {
+                            console.log(err);
+                            callback({
+                                value: false
+                            });
+                            db.close();
+                        } else if (updated) {
+                            callback({
+                                value: true,
+                                id: data._id
+                            });
+                            db.close();
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "Not updated"
+                            });
+                            db.close();
+                        }
+                    });
                 }
             }
         });

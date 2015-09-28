@@ -55,41 +55,33 @@ module.exports = {
                         }
                     });
                 } else {
-                    if (data._id && sails.ObjectID.isValid(data._id)) {
-                        var team = sails.ObjectID(data._id);
-                        delete data._id
-                        db.collection('team').update({
-                            _id: team
-                        }, {
-                            $set: data
-                        }, function (err, updated) {
-                            if (err) {
-                                console.log(err);
-                                callback({
-                                    value: false,
-                                    comment: "Error"
-                                });
-                                db.close();
-                            } else if (updated) {
-                                callback({
-                                    value: true
-                                });
-                                db.close();
-                            } else {
-                                callback({
-                                    value: false,
-                                    comment: "Error"
-                                });
-                                db.close();
-                            }
-                        });
-                    } else {
-                        callback({
-                            value: false,
-                            comment: "teamid Incorrect"
-                        });
-                        db.close();
-                    }
+                    var team = sails.ObjectID(data._id);
+                    delete data._id
+                    db.collection('team').update({
+                        _id: team
+                    }, {
+                        $set: data
+                    }, function (err, updated) {
+                        if (err) {
+                            console.log(err);
+                            callback({
+                                value: false,
+                                comment: "Error"
+                            });
+                            db.close();
+                        } else if (updated) {
+                            callback({
+                                value: true
+                            });
+                            db.close();
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "Error"
+                            });
+                            db.close();
+                        }
+                    });
                 }
             }
         });
@@ -196,67 +188,26 @@ module.exports = {
     },
     //Findlimited
     findone: function (data, callback) {
-        if (data._id && sails.ObjectID.isValid(data._id)) {
-            sails.query(function (err, db) {
-                if (err) {
-                    console.log(err);
-                    callback({
-                        value: false
-                    });
-                }
-                if (db) {
-                    db.collection("team").find({
-                        _id: sails.ObjectID(data._id)
-                    }).toArray(function (err, data2) {
-                        if (err) {
-                            console.log(err);
-                            callback({
-                                value: false
-                            });
-                            db.close();
-                        } else if (data2 && data2[0]) {
-                            delete data2[0].password;
-                            callback(data2[0]);
-                            db.close();
-                        } else {
-                            callback({
-                                value: false,
-                                comment: "team not found"
-                            });
-                            db.close();
-                        }
-                    });
-                }
-            });
-        } else {
-            callback({
-                value: false,
-                comment: "teamid incorrect."
-            });
-        }
-    },
-    delete: function (data, callback) {
-        if (data._id && sails.ObjectID.isValid(data._id)) {
-            sails.query(function (err, db) {
-                if (err) {
-                    console.log(err);
-                    callback({
-                        value: false
-                    });
-                }
-                db.collection('team').remove({
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("team").find({
                     _id: sails.ObjectID(data._id)
-                }, function (err, deleted) {
-                    if (deleted) {
-                        callback({
-                            value: true
-                        });
-                        db.close();
-                    } else if (err) {
+                }).toArray(function (err, data2) {
+                    if (err) {
                         console.log(err);
                         callback({
                             value: false
                         });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        delete data2[0].password;
+                        callback(data2[0]);
                         db.close();
                     } else {
                         callback({
@@ -266,13 +217,40 @@ module.exports = {
                         db.close();
                     }
                 });
+            }
+        });
+    },
+    delete: function (data, callback) {
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            db.collection('team').remove({
+                _id: sails.ObjectID(data._id)
+            }, function (err, deleted) {
+                if (deleted) {
+                    callback({
+                        value: true
+                    });
+                    db.close();
+                } else if (err) {
+                    console.log(err);
+                    callback({
+                        value: false
+                    });
+                    db.close();
+                } else {
+                    callback({
+                        value: false,
+                        comment: "team not found"
+                    });
+                    db.close();
+                }
             });
-        } else {
-            callback({
-                value: false,
-                comment: "teamid Incorrect"
-            });
-        }
+        });
     },
     searchmail: function (data, callback) {
         sails.query(function (err, db) {
@@ -308,5 +286,127 @@ module.exports = {
                 });
             }
         });
-    }
+    },
+    saveExcel: function (data, callback) {
+        sails.query(function (err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                if (!data._id) {
+                    data._id = sails.ObjectID();
+                    db.collection('team').insert(data, function (err, created) {
+                        if (err) {
+                            console.log(err);
+                            callback({
+                                value: false,
+                                comment: "Error"
+                            });
+                            db.close();
+                        } else if (created) {
+                            callback({
+                                value: true,
+                                id: data._id
+                            });
+                            db.close();
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "Error"
+                            });
+                            db.close();
+                        }
+                    });
+                } else {
+                    var team = sails.ObjectID(data._id);
+                    delete data._id
+                    db.collection('team').update({
+                        _id: team
+                    }, {
+                        $set: data
+                    }, function (err, updated) {
+                        if (err) {
+                            console.log(err);
+                            callback({
+                                value: false,
+                                comment: "Error"
+                            });
+                            db.close();
+                        } else if (updated) {
+                            callback({
+                                value: true
+                            });
+                            db.close();
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "Error"
+                            });
+                            db.close();
+                        }
+                    });
+                }
+            }
+        });
+    },
+    saveforexcel: function (data, callback) {
+        var newdata = {};
+        newdata.teamno = data.teamno;
+        newdata._id = sails.ObjectID();
+        sails.query(function (err, db) {
+            var exit = 0;
+            var exitup = 0;
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                exit++;
+                db.collection("team").find({
+                    teamno: data.teamno
+                }).each(function (err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2 != null) {
+                        exitup++;
+                        callback({
+                            _id: data2._id
+                        });
+                        db.close();
+                    } else {
+                        if (exit != exitup) {
+                            db.collection('team').insert(newdata, function (err, created) {
+                                if (err) {
+                                    console.log(err);
+                                    callback({
+                                        value: false
+                                    });
+                                    db.close();
+                                } else if (created) {
+                                    callback({
+                                        _id: newdata._id
+                                    });
+                                    db.close();
+                                } else {
+                                    callback({
+                                        value: false
+                                    });
+                                    db.close();
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    },
 };

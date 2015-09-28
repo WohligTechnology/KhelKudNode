@@ -47,41 +47,33 @@ module.exports = {
                         }
                     });
                 } else {
-                    if (data._id && sails.ObjectID.isValid(data._id)) {
-                        var village = sails.ObjectID(data._id);
-                        delete data._id;
-                        db.collection('village').update({
-                            _id: village
-                        }, {
-                            $set: data
-                        }, function (err, updated) {
-                            if (err) {
-                                console.log(err);
-                                callback({
-                                    value: false
-                                });
-                                db.close();
-                            } else if (updated) {
-                                callback({
-                                    value: true,
-                                    id: data._id
-                                });
-                                db.close();
-                            } else {
-                                callback({
-                                    value: false,
-                                    comment: "Not updated"
-                                });
-                                db.close();
-                            }
-                        });
-                    } else {
-                        callback({
-                            value: false,
-                            comment: "Id incorrect"
-                        });
-                        db.close();
-                    }
+                    var village = sails.ObjectID(data._id);
+                    delete data._id;
+                    db.collection('village').update({
+                        _id: village
+                    }, {
+                        $set: data
+                    }, function (err, updated) {
+                        if (err) {
+                            console.log(err);
+                            callback({
+                                value: false
+                            });
+                            db.close();
+                        } else if (updated) {
+                            callback({
+                                value: true,
+                                id: data._id
+                            });
+                            db.close();
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "Not updated"
+                            });
+                            db.close();
+                        }
+                    });
                 }
             }
         });

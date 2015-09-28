@@ -25,6 +25,7 @@ module.exports.bootstrap = function (cb) {
         sails.md5 = require('MD5'),
         sails.moment = require('moment'),
         sails.fs = require('fs'),
+        sails.xlsxj = require("xlsx-to-json"),
         // Connection URL
         sails.url = 'mongodb://localhost:27017/bherpobackend';
     sails.query = function (myfunc) {

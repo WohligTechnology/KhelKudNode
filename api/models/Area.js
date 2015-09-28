@@ -47,41 +47,33 @@ module.exports = {
                         }
                     });
                 } else {
-                    if (data._id && sails.ObjectID.isValid(data._id)) {
-                        var area = sails.ObjectID(data._id);
-                        delete data._id;
-                        db.collection('area').update({
-                            _id: area
-                        }, {
-                            $set: data
-                        }, function (err, updated) {
-                            if (err) {
-                                console.log(err);
-                                callback({
-                                    value: false
-                                });
-                                db.close();
-                            } else if (updated) {
-                                callback({
-                                    value: true,
-                                    id: data._id
-                                });
-                                db.close();
-                            } else {
-                                callback({
-                                    value: false,
-                                    comment: "Not updated"
-                                });
-                                db.close();
-                            }
-                        });
-                    } else {
-                        callback({
-                            value: false,
-                            comment: "Id incorrect"
-                        });
-                        db.close();
-                    }
+                    var area = sails.ObjectID(data._id);
+                    delete data._id;
+                    db.collection('area').update({
+                        _id: area
+                    }, {
+                        $set: data
+                    }, function (err, updated) {
+                        if (err) {
+                            console.log(err);
+                            callback({
+                                value: false
+                            });
+                            db.close();
+                        } else if (updated) {
+                            callback({
+                                value: true,
+                                id: data._id
+                            });
+                            db.close();
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "Not updated"
+                            });
+                            db.close();
+                        }
+                    });
                 }
             }
         });
@@ -328,6 +320,63 @@ module.exports = {
                     db.close();
                 }
             });
+        });
+    },
+    savearea: function (data, callback) {
+        var newdata = {};
+        newdata.name = data.area;
+        newdata._id = sails.ObjectID();
+        sails.query(function (err, db) {
+            var exit = 0;
+            var exitup = 0;
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                exit++;
+                db.collection("area").find({
+                    name: data.area
+                }).each(function (err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2 != null) {
+                        exitup++;
+                        callback({
+                            value: true
+                        });
+                        db.close();
+                    } else {
+                        if (exit != exitup) {
+                            db.collection('area').insert(newdata, function (err, created) {
+                                if (err) {
+                                    console.log(err);
+                                    callback({
+                                        value: false
+                                    });
+                                    db.close();
+                                } else if (created) {
+                                    callback({
+                                        value: true
+                                    });
+                                    db.close();
+                                } else {
+                                    callback({
+                                        value: false
+                                    });
+                                    db.close();
+                                }
+                            });
+                        }
+                    }
+                });
+            }
         });
     }
 };
