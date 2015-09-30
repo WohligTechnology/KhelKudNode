@@ -34,5 +34,19 @@ module.exports = {
             res.json(data);
         }
         User.searchmail(req.body, print);
+    },
+    downloadE: function (req, res) {
+        var path = './assets/docs/Event_Rule.pdf';
+        var image = sails.fs.readFileSync(path);
+        var mimetype = sails.mime.lookup(path);
+        res.set('Content-Type', mimetype);
+        res.send(image);
+    },
+    downloadP: function (req, res) {
+        var path = './assets/docs/Participate_Rule.pdf';
+        var image = sails.fs.readFileSync(path);
+        var mimetype = sails.mime.lookup(path);
+        res.set('Content-Type', mimetype);
+        res.send(image);
     }
 };

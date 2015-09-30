@@ -1,6 +1,6 @@
 module.exports = {
-    save: function (data, callback) {
-        sails.query(function (err, db) {
+    save: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -12,7 +12,7 @@ module.exports = {
                     data._id = sails.ObjectID();
                     db.collection("user").find({
                         email: data.email
-                    }).toArray(function (err, data2) {
+                    }).toArray(function(err, data2) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -27,38 +27,89 @@ module.exports = {
                             });
                             db.close();
                         } else {
-                            db.collection('user').insert(data, function (err, created) {
-                                if (err) {
+                            db.collection("team").find({
+                                "pincode.pincode": data.pincode
+                            }, {
+                                "_id": 1,
+                                "teamname": 1
+                            }).toArray(function(err, data2) {
+                                if (data2 && data2[0]) {
+                                    data.team = data2[0];
+                                    saveuser();
+                                } else if (err) {
                                     console.log(err);
                                     callback({
-                                        value: false,
-                                        comment: "Error"
-                                    });
-                                    db.close();
-                                } else if (created) {
-                                    callback({
-                                        value: true,
-                                        id: data._id
+                                        value: false
                                     });
                                     db.close();
                                 } else {
                                     callback({
                                         value: false,
-                                        comment: "Error"
+                                        comment: "No Such pincode."
                                     });
                                     db.close();
                                 }
                             });
+
+                            function saveuser() {
+                                db.collection('user').insert(data, function(err, created) {
+                                    if (err) {
+                                        console.log(err);
+                                        callback({
+                                            value: false,
+                                            comment: "Error"
+                                        });
+                                        db.close();
+                                    } else if (created) {
+                                        callback({
+                                            value: true,
+                                            id: data._id
+                                        });
+                                        db.close();
+                                    } else {
+                                        callback({
+                                            value: false,
+                                            comment: "Error"
+                                        });
+                                        db.close();
+                                    }
+                                });
+                            }
                         }
                     });
                 } else {
-                        var user = sails.ObjectID(data._id);
-                        delete data._id
+                    var user = sails.ObjectID(data._id);
+                    delete data._id;
+                    db.collection("team").find({
+                        "pincode.pincode": data.pincode
+                    }, {
+                        "_id": 1,
+                        "teamname": 1
+                    }).toArray(function(err, data2) {
+                        if (data2 && data2[0]) {
+                            data.team = data2[0];
+                            edituser();
+                        } else if (err) {
+                            console.log(err);
+                            callback({
+                                value: false
+                            });
+                            db.close();
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "No Such pincode."
+                            });
+                            db.close();
+                        }
+                    });
+
+                    function edituser() {
                         db.collection('user').update({
                             _id: user
                         }, {
                             $set: data
-                        }, function (err, updated) {
+                        }, function(err, updated) {
                             if (err) {
                                 console.log(err);
                                 callback({
@@ -79,12 +130,13 @@ module.exports = {
                                 db.close();
                             }
                         });
+                    }
                 }
             }
         });
     },
-    find: function (data, callback) {
-        sails.query(function (err, db) {
+    find: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -92,7 +144,7 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("user").find().toArray(function (err, found) {
+                db.collection("user").find().toArray(function(err, found) {
                     if (err) {
                         callback({
                             value: false
@@ -113,13 +165,13 @@ module.exports = {
         });
     },
     //Findlimited
-    findlimited: function (data, callback) {
+    findlimited: function(data, callback) {
         var newreturns = {};
         newreturns.data = [];
         var check = new RegExp(data.search, "i");
         var pagesize = parseInt(data.pagesize);
         var pagenumber = parseInt(data.pagenumber);
-        sails.query(function (err, db) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -134,7 +186,7 @@ module.exports = {
                         name: {
                             '$regex': check
                         }
-                    }, function (err, number) {
+                    }, function(err, number) {
                         if (number && number != "") {
                             newreturns.total = number;
                             newreturns.totalpages = Math.ceil(number / data.pagesize);
@@ -159,7 +211,7 @@ module.exports = {
                             name: {
                                 '$regex': check
                             }
-                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function (err, found) {
+                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
                             if (err) {
                                 callback({
                                     value: false
@@ -184,60 +236,27 @@ module.exports = {
         });
     },
     //Findlimited
-    findone: function (data, callback) {
-            sails.query(function (err, db) {
-                if (err) {
-                    console.log(err);
-                    callback({
-                        value: false
-                    });
-                }
-                if (db) {
-                    db.collection("user").find({
-                        _id: sails.ObjectID(data._id)
-                    }).toArray(function (err, data2) {
-                        if (err) {
-                            console.log(err);
-                            callback({
-                                value: false
-                            });
-                            db.close();
-                        } else if (data2 && data2[0]) {
-                            delete data2[0].password;
-                            callback(data2[0]);
-                            db.close();
-                        } else {
-                            callback({
-                                value: false,
-                                comment: "user not found"
-                            });
-                            db.close();
-                        }
-                    });
-                }
-            });
-    },
-    delete: function (data, callback) {
-            sails.query(function (err, db) {
-                if (err) {
-                    console.log(err);
-                    callback({
-                        value: false
-                    });
-                }
-                db.collection('user').remove({
+    findone: function(data, callback) {
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("user").find({
                     _id: sails.ObjectID(data._id)
-                }, function (err, deleted) {
-                    if (deleted) {
-                        callback({
-                            value: true
-                        });
-                        db.close();
-                    } else if (err) {
+                }).toArray(function(err, data2) {
+                    if (err) {
                         console.log(err);
                         callback({
                             value: false
                         });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        delete data2[0].password;
+                        callback(data2[0]);
                         db.close();
                     } else {
                         callback({
@@ -247,10 +266,43 @@ module.exports = {
                         db.close();
                     }
                 });
-            });
+            }
+        });
     },
-    searchmail: function (data, callback) {
-        sails.query(function (err, db) {
+    delete: function(data, callback) {
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            db.collection('user').remove({
+                _id: sails.ObjectID(data._id)
+            }, function(err, deleted) {
+                if (deleted) {
+                    callback({
+                        value: true
+                    });
+                    db.close();
+                } else if (err) {
+                    console.log(err);
+                    callback({
+                        value: false
+                    });
+                    db.close();
+                } else {
+                    callback({
+                        value: false,
+                        comment: "user not found"
+                    });
+                    db.close();
+                }
+            });
+        });
+    },
+    searchmail: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -260,7 +312,7 @@ module.exports = {
             if (db) {
                 db.collection("user").find({
                     email: data.email
-                }).toArray(function (err, data2) {
+                }).toArray(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback({
