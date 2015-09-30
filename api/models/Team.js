@@ -47,7 +47,7 @@ module.exports = {
                                 } else {
                                     callback({
                                         value: false,
-                                        comment: "Error"
+                                        comment: "Not created"
                                     });
                                     db.close();
                                 }
@@ -77,7 +77,7 @@ module.exports = {
                         } else {
                             callback({
                                 value: false,
-                                comment: "Error"
+                                comment: "No data found"
                             });
                             db.close();
                         }
@@ -107,7 +107,7 @@ module.exports = {
                     } else {
                         callback({
                             value: false,
-                            comment: "No team found"
+                            comment: "No data found"
                         });
                         db.close();
                     }
@@ -176,7 +176,7 @@ module.exports = {
                             } else {
                                 callback({
                                     value: false,
-                                    comment: "No data found."
+                                    comment: "No data found"
                                 });
                                 db.close();
                             }
@@ -212,7 +212,7 @@ module.exports = {
                     } else {
                         callback({
                             value: false,
-                            comment: "team not found"
+                            comment: "No data found"
                         });
                         db.close();
                     }
@@ -245,7 +245,7 @@ module.exports = {
                 } else {
                     callback({
                         value: false,
-                        comment: "team not found"
+                        comment: "No data found"
                     });
                     db.close();
                 }
@@ -273,13 +273,13 @@ module.exports = {
                     } else if (data2 && data2[0]) {
                         callback({
                             value: true,
-                            comment: "User found"
+                            comment: "Team found"
                         });
                         db.close();
                     } else {
                         callback({
                             value: false,
-                            comment: "No user found"
+                            comment: "No data found"
                         });
                         db.close();
                     }
@@ -315,7 +315,7 @@ module.exports = {
                         } else {
                             callback({
                                 value: false,
-                                comment: "Error"
+                                comment: "Not created"
                             });
                             db.close();
                         }
@@ -343,7 +343,7 @@ module.exports = {
                         } else {
                             callback({
                                 value: false,
-                                comment: "Error"
+                                comment: "No data found"
                             });
                             db.close();
                         }
@@ -398,7 +398,8 @@ module.exports = {
                                     db.close();
                                 } else {
                                     callback({
-                                        value: false
+                                        value: false,
+                                        comment:"No data found"
                                     });
                                     db.close();
                                 }

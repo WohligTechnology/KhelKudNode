@@ -1,5 +1,6 @@
 module.exports = {
     save: function(data, callback) {
+        data.pincode = data.pincode.toString();
         sails.query(function(err, db) {
             if (err) {
                 console.log(err);
@@ -45,7 +46,7 @@ module.exports = {
                                 } else {
                                     callback({
                                         value: false,
-                                        comment: "No Such pincode."
+                                        comment: "No such pincode"
                                     });
                                     db.close();
                                 }
@@ -69,7 +70,7 @@ module.exports = {
                                     } else {
                                         callback({
                                             value: false,
-                                            comment: "Error"
+                                            comment: "Not created"
                                         });
                                         db.close();
                                     }
@@ -98,7 +99,7 @@ module.exports = {
                         } else {
                             callback({
                                 value: false,
-                                comment: "No Such pincode."
+                                comment: "No such pincode"
                             });
                             db.close();
                         }
@@ -125,7 +126,7 @@ module.exports = {
                             } else {
                                 callback({
                                     value: false,
-                                    comment: "Error"
+                                    comment: "No data found"
                                 });
                                 db.close();
                             }
@@ -225,7 +226,7 @@ module.exports = {
                             } else {
                                 callback({
                                     value: false,
-                                    comment: "No data found."
+                                    comment: "No data found"
                                 });
                                 db.close();
                             }
@@ -261,7 +262,7 @@ module.exports = {
                     } else {
                         callback({
                             value: false,
-                            comment: "user not found"
+                            comment: "User not found"
                         });
                         db.close();
                     }
@@ -294,7 +295,7 @@ module.exports = {
                 } else {
                     callback({
                         value: false,
-                        comment: "user not found"
+                        comment: "User not found"
                     });
                     db.close();
                 }
@@ -328,7 +329,7 @@ module.exports = {
                     } else {
                         callback({
                             value: false,
-                            comment: "No user found"
+                            comment: "No data found"
                         });
                         db.close();
                     }

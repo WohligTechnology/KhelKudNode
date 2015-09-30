@@ -33,7 +33,7 @@ module.exports = {
                         } else {
                             callback({
                                 value: false,
-                                comment: "No Such pincode"
+                                comment: "Not created"
                             });
                             db.close();
                         }
@@ -65,7 +65,7 @@ module.exports = {
                         } else {
                             callback({
                                 value: false,
-                                comment: "No Such pincode"
+                                comment: "No data found"
                             });
                             db.close();
                         }
@@ -109,7 +109,7 @@ module.exports = {
                     } else {
                         callback({
                             value: false,
-                            comment: "No such pincode."
+                            comment: "No data found"
                         });
                         db.close();
                     }
@@ -183,7 +183,7 @@ module.exports = {
                         } else {
                             callback({
                                 value: false,
-                                comment: "Count of null."
+                                comment: "Count of null"
                             });
                             db.close();
                         }
@@ -230,7 +230,7 @@ module.exports = {
                             } else {
                                 callback({
                                     value: false,
-                                    comment: "No data found."
+                                    comment: "No data found"
                                 });
                                 db.close();
                             }
@@ -269,7 +269,7 @@ module.exports = {
                     } else {
                         callback({
                             value: false,
-                            comment: "No Such pincode."
+                            comment: "No data found"
                         });
                         db.close();
                     }
@@ -318,7 +318,8 @@ module.exports = {
                         db.close();
                     } else {
                         callback({
-                            value: false
+                            value: false,
+                            comment:"No data found"
                         });
                         db.close();
                     }
@@ -358,9 +359,9 @@ module.exports = {
                         db.close();
                     } else {
                         callback({
-                            value: false
+                            value: false,
+                            comment:"No data found"
                         });
-                        console.log("No team found");
                         db.close();
                     }
                 });

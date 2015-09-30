@@ -27,7 +27,7 @@ module.exports = {
                         } else {
                             callback({
                                 value: false,
-                                comment: "Error"
+                                comment: "Not created"
                             });
                             db.close();
                         }
@@ -55,7 +55,7 @@ module.exports = {
                         } else {
                             callback({
                                 value: false,
-                                comment: "Error"
+                                comment: "No data found"
                             });
                             db.close();
                         }
@@ -85,7 +85,7 @@ module.exports = {
                     } else {
                         callback({
                             value: false,
-                            comment: "No articles found"
+                            comment: "No data found"
                         });
                         db.close();
                     }
@@ -154,7 +154,7 @@ module.exports = {
                             } else {
                                 callback({
                                     value: false,
-                                    comment: "No data found."
+                                    comment: "No data found"
                                 });
                                 db.close();
                             }
@@ -190,7 +190,7 @@ module.exports = {
                     } else {
                         callback({
                             value: false,
-                            comment: "articles not found"
+                            comment: "No data found"
                         });
                         db.close();
                     }
@@ -223,7 +223,7 @@ module.exports = {
                 } else {
                     callback({
                         value: false,
-                        comment: "articles not found"
+                        comment: "No data found"
                     });
                     db.close();
                 }
