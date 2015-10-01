@@ -1,9 +1,9 @@
 module.exports = {
-    save: function (data, callback) {
+    save: function(data, callback) {
         if (data.password) {
             data.password = sails.md5(data.password);
         }
-        sails.query(function (err, db) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -15,7 +15,7 @@ module.exports = {
                     data._id = sails.ObjectID();
                     db.collection("team").find({
                         email: data.email
-                    }).toArray(function (err, data2) {
+                    }).toArray(function(err, data2) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -30,7 +30,7 @@ module.exports = {
                             });
                             db.close();
                         } else {
-                            db.collection('team').insert(data, function (err, created) {
+                            db.collection('team').insert(data, function(err, created) {
                                 if (err) {
                                     console.log(err);
                                     callback({
@@ -61,7 +61,7 @@ module.exports = {
                         _id: team
                     }, {
                         $set: data
-                    }, function (err, updated) {
+                    }, function(err, updated) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -69,9 +69,15 @@ module.exports = {
                                 comment: "Error"
                             });
                             db.close();
-                        } else if (updated) {
+                        } else if (updated.result.nModified != 0 && updated.result.n != 0) {
                             callback({
                                 value: true
+                            });
+                            db.close();
+                        } else if (updated.result.nModified == 0 && updated.result.n != 0) {
+                            callback({
+                                value: true,
+                                comment: "Data already updated"
                             });
                             db.close();
                         } else {
@@ -86,8 +92,8 @@ module.exports = {
             }
         });
     },
-    find: function (data, callback) {
-        sails.query(function (err, db) {
+    find: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -95,7 +101,7 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("team").find().toArray(function (err, found) {
+                db.collection("team").find().toArray(function(err, found) {
                     if (err) {
                         callback({
                             value: false
@@ -116,13 +122,13 @@ module.exports = {
         });
     },
     //Findlimited
-    findlimited: function (data, callback) {
+    findlimited: function(data, callback) {
         var newreturns = {};
         newreturns.data = [];
         var check = new RegExp(data.search, "i");
         var pagesize = parseInt(data.pagesize);
         var pagenumber = parseInt(data.pagenumber);
-        sails.query(function (err, db) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -137,7 +143,7 @@ module.exports = {
                         name: {
                             '$regex': check
                         }
-                    }, function (err, number) {
+                    }, function(err, number) {
                         if (number && number != "") {
                             newreturns.total = number;
                             newreturns.totalpages = Math.ceil(number / data.pagesize);
@@ -162,7 +168,7 @@ module.exports = {
                             name: {
                                 '$regex': check
                             }
-                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function (err, found) {
+                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
                             if (err) {
                                 callback({
                                     value: false
@@ -187,8 +193,8 @@ module.exports = {
         });
     },
     //Findlimited
-    findone: function (data, callback) {
-        sails.query(function (err, db) {
+    findone: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -198,7 +204,7 @@ module.exports = {
             if (db) {
                 db.collection("team").find({
                     _id: sails.ObjectID(data._id)
-                }).toArray(function (err, data2) {
+                }).toArray(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback({
@@ -220,8 +226,8 @@ module.exports = {
             }
         });
     },
-    delete: function (data, callback) {
-        sails.query(function (err, db) {
+    delete: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -230,7 +236,7 @@ module.exports = {
             }
             db.collection('team').remove({
                 _id: sails.ObjectID(data._id)
-            }, function (err, deleted) {
+            }, function(err, deleted) {
                 if (deleted) {
                     callback({
                         value: true
@@ -252,8 +258,8 @@ module.exports = {
             });
         });
     },
-    searchmail: function (data, callback) {
-        sails.query(function (err, db) {
+    searchmail: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -263,7 +269,7 @@ module.exports = {
             if (db) {
                 db.collection("team").find({
                     email: data.email
-                }).toArray(function (err, data2) {
+                }).toArray(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback({
@@ -287,8 +293,8 @@ module.exports = {
             }
         });
     },
-    saveExcel: function (data, callback) {
-        sails.query(function (err, db) {
+    saveExcel: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -298,7 +304,7 @@ module.exports = {
             if (db) {
                 if (!data._id) {
                     data._id = sails.ObjectID();
-                    db.collection('team').insert(data, function (err, created) {
+                    db.collection('team').insert(data, function(err, created) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -327,7 +333,7 @@ module.exports = {
                         _id: team
                     }, {
                         $set: data
-                    }, function (err, updated) {
+                    }, function(err, updated) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -352,11 +358,11 @@ module.exports = {
             }
         });
     },
-    saveforexcel: function (data, callback) {
+    saveforexcel: function(data, callback) {
         var newdata = {};
         newdata.teamno = data.teamno;
         newdata._id = sails.ObjectID();
-        sails.query(function (err, db) {
+        sails.query(function(err, db) {
             var exit = 0;
             var exitup = 0;
             if (err) {
@@ -369,7 +375,7 @@ module.exports = {
                 exit++;
                 db.collection("team").find({
                     teamno: data.teamno
-                }).each(function (err, data2) {
+                }).each(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback({
@@ -384,7 +390,7 @@ module.exports = {
                         db.close();
                     } else {
                         if (exit != exitup) {
-                            db.collection('team').insert(newdata, function (err, created) {
+                            db.collection('team').insert(newdata, function(err, created) {
                                 if (err) {
                                     console.log(err);
                                     callback({
@@ -399,7 +405,7 @@ module.exports = {
                                 } else {
                                     callback({
                                         value: false,
-                                        comment:"No data found"
+                                        comment: "No data found"
                                     });
                                     db.close();
                                 }

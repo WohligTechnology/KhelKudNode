@@ -118,9 +118,15 @@ module.exports = {
                                     comment: "Error"
                                 });
                                 db.close();
-                            } else if (updated) {
+                            } else if (updated.result.nModified != 0 && updated.result.n != 0) {
                                 callback({
                                     value: true
+                                });
+                                db.close();
+                            } else if (updated.result.nModified == 0 && updated.result.n != 0) {
+                                callback({
+                                    value: true,
+                                    comment: "Data already updated"
                                 });
                                 db.close();
                             } else {

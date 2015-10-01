@@ -1,6 +1,6 @@
 module.exports = {
-    save: function (data, callback) {
-        sails.query(function (err, db) {
+    save: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -18,7 +18,7 @@ module.exports = {
                         $push: {
                             player: data
                         }
-                    }, function (err, updated) {
+                    }, function(err, updated) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -42,7 +42,7 @@ module.exports = {
                     data._id = sails.ObjectID(data._id);
                     var tobechanged = {};
                     var attribute = "player.$.";
-                    _.forIn(data, function (value, key) {
+                    _.forIn(data, function(value, key) {
                         tobechanged[attribute + key] = value;
                     });
                     db.collection("team").update({
@@ -50,16 +50,22 @@ module.exports = {
                         "player._id": data._id
                     }, {
                         $set: tobechanged
-                    }, function (err, updated) {
+                    }, function(err, updated) {
                         if (err) {
                             console.log(err);
                             callback({
                                 value: false
                             });
                             db.close();
-                        } else if (updated) {
+                        } else if (updated.result.nModified != 0 && updated.result.n != 0) {
                             callback({
                                 value: true
+                            });
+                            db.close();
+                        } else if (updated.result.nModified == 0 && updated.result.n != 0) {
+                            callback({
+                                value: true,
+                                comment: "Data already updated"
                             });
                             db.close();
                         } else {
@@ -74,11 +80,11 @@ module.exports = {
             }
         });
     },
-    delete: function (data, callback) {
+    delete: function(data, callback) {
         var team = sails.ObjectID(data.team);
         delete data.team;
         data._id = sails.ObjectID(data._id);
-        sails.query(function (err, db) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -94,7 +100,7 @@ module.exports = {
                             "_id": sails.ObjectID(data._id)
                         }
                     }
-                }, function (err, updated) {
+                }, function(err, updated) {
                     if (err) {
                         console.log(err);
                         callback({
@@ -118,8 +124,8 @@ module.exports = {
         });
     },
     //Findlimited
-    findlimited: function (data, callback) {
-        sails.query(function (err, db) {
+    findlimited: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -146,9 +152,9 @@ module.exports = {
                                 $regex: check
                             }
                         }
-          }, {
+                    }, {
                         $unwind: "$player"
-          }, {
+                    }, {
                         $match: {
                             _id: team,
                             "player.name": {
@@ -158,18 +164,18 @@ module.exports = {
                                 $regex: check
                             }
                         }
-          }, {
+                    }, {
                         $group: {
                             _id: team,
                             count: {
                                 $sum: 1
                             }
                         }
-          }, {
+                    }, {
                         $project: {
                             count: 1
                         }
-          }]).toArray(function (err, result) {
+                    }]).toArray(function(err, result) {
                         if (result && result[0]) {
                             newreturns.total = result[0].count;
                             newreturns.totalpages = Math.ceil(result[0].count / data.pagesize);
@@ -200,9 +206,9 @@ module.exports = {
                                     $regex: check
                                 }
                             }
-          }, {
+                        }, {
                             $unwind: "$player"
-          }, {
+                        }, {
                             $match: {
                                 _id: team,
                                 "player.name": {
@@ -212,11 +218,11 @@ module.exports = {
                                     $regex: check
                                 }
                             }
-          }, {
+                        }, {
                             $project: {
                                 player: 1
                             }
-          }]).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function (err, found) {
+                        }]).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
                             if (found && found[0]) {
                                 newreturns.data = found;
                                 callback(newreturns);
@@ -241,9 +247,9 @@ module.exports = {
         });
     },
     //Findlimited
-    findone: function (data, callback) {
+    findone: function(data, callback) {
         var team = sails.ObjectID(data.team);
-        sails.query(function (err, db) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -256,7 +262,7 @@ module.exports = {
                     "player._id": sails.ObjectID(data._id)
                 }, {
                     "player.$": 1
-                }).toArray(function (err, data2) {
+                }).toArray(function(err, data2) {
                     if (data2 && data2[0] && data2[0].player && data2[0].player[0]) {
                         callback(data2[0].player[0]);
                         db.close();
@@ -277,9 +283,9 @@ module.exports = {
             }
         });
     },
-    find: function (data, callback) {
+    find: function(data, callback) {
         var team = sails.ObjectID(data.team);
-        sails.query(function (err, db) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -294,19 +300,19 @@ module.exports = {
                             $exists: true
                         }
                     }
-        }, {
+                }, {
                     $unwind: "$player"
-        }, {
+                }, {
                     $match: {
                         "player.name": {
                             $exists: true
                         }
                     }
-        }, {
+                }, {
                     $project: {
                         player: 1
                     }
-        }]).toArray(function (err, data2) {
+                }]).toArray(function(err, data2) {
                     if (data2 && data2[0] && data2[0].player && data2[0].player[0]) {
                         callback(data2);
                         db.close();
@@ -319,7 +325,7 @@ module.exports = {
                     } else {
                         callback({
                             value: false,
-                            comment:"No data found"
+                            comment: "No data found"
                         });
                         db.close();
                     }
