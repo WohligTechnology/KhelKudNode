@@ -1,34 +1,63 @@
 
 module.exports = {
-    save: function (req, res) {
-        var print = function (data) {
-            res.json(data);
+    save: function(req, res) {
+        if (req.body._id) {
+            if (req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+                village();
+            } else {
+                res.json({
+                    value: "false",
+                    comment: "Village-id is incorrect"
+                });
+            }
+        } else {
+            village();
         }
-        Village.save(req.body, print);
+
+        function village() {
+            var print = function(data) {
+                res.json(data);
+            }
+            Village.save(req.body, print);
+        }
     },
-    find: function (req, res) {
-        var print = function (data) {
-            res.json(data);
+    delete: function(req, res) {
+        if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+            var print = function(data) {
+                res.json(data);
+            }
+            Village.delete(req.body, print);
+        } else {
+            res.json({
+                value: "false",
+                comment: "Village-id is incorrect"
+            });
         }
-        Village.find(req.body, print);
     },
-    findlimited: function (req, res) {
-        var print = function (data) {
+    find: function(req, res) {
+        function callback(data) {
             res.json(data);
-        }
-        Village.findlimited(req.body, print);
+        };
+        Village.find(req.body, callback);
     },
-    findone: function (req, res) {
-        var print = function (data) {
-            res.json(data);
+    findone: function(req, res) {
+        if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+            var print = function(data) {
+                res.json(data);
+            }
+            Village.findone(req.body, print);
+        } else {
+            res.json({
+                value: "false",
+                comment: "Village-id is incorrect"
+            });
         }
-        Village.findone(req.body, print);
     },
-    delete: function (req, res) {
-        var print = function (data) {
+    findlimited: function(req, res) {
+        function callback(data) {
             res.json(data);
-        }
-        Village.delete(req.body, print);
+        };
+        Village.findlimited(req.body, callback);
     },
     excelobject: function (req, res) {
         sails.query(function (err, db) {

@@ -1,32 +1,61 @@
 module.exports = {
-    save: function (req, res) {
-        var print = function (data) {
-            res.json(data);
+    save: function(req, res) {
+        if (req.body._id) {
+            if (req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+                sports();
+            } else {
+                res.json({
+                    value: "false",
+                    comment: "Sports-id is incorrect"
+                });
+            }
+        } else {
+            sports();
         }
-        Sports.save(req.body, print);
+
+        function sports() {
+            var print = function(data) {
+                res.json(data);
+            }
+            Sports.save(req.body, print);
+        }
     },
-    find: function (req, res) {
-        var print = function (data) {
-            res.json(data);
+    delete: function(req, res) {
+        if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+            var print = function(data) {
+                res.json(data);
+            }
+            Sports.delete(req.body, print);
+        } else {
+            res.json({
+                value: "false",
+                comment: "Sports-id is incorrect"
+            });
         }
-        Sports.find(req.body, print);
     },
-    findlimited: function (req, res) {
-        var print = function (data) {
+    find: function(req, res) {
+        function callback(data) {
             res.json(data);
-        }
-        Sports.findlimited(req.body, print);
+        };
+        Sports.find(req.body, callback);
     },
-    findone: function (req, res) {
-        var print = function (data) {
-            res.json(data);
+    findone: function(req, res) {
+        if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+            var print = function(data) {
+                res.json(data);
+            }
+            Sports.findone(req.body, print);
+        } else {
+            res.json({
+                value: "false",
+                comment: "Sports-id is incorrect"
+            });
         }
-        Sports.findone(req.body, print);
     },
-    delete: function (req, res) {
-        var print = function (data) {
+    findlimited: function(req, res) {
+        function callback(data) {
             res.json(data);
-        }
-        Sports.delete(req.body, print);
+        };
+        Sports.findlimited(req.body, callback);
     }
 };

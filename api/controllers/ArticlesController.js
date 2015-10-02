@@ -1,32 +1,61 @@
 module.exports = {
-    save: function (req, res) {
-        var print = function (data) {
-            res.json(data);
+    save: function(req, res) {
+        if (req.body._id) {
+            if (req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+                articles();
+            } else {
+                res.json({
+                    value: "false",
+                    comment: "Articles-id is incorrect"
+                });
+            }
+        } else {
+            articles();
         }
-        Articles.save(req.body, print);
+
+        function articles() {
+            var print = function(data) {
+                res.json(data);
+            }
+            Articles.save(req.body, print);
+        }
     },
-    find: function (req, res) {
-        var print = function (data) {
-            res.json(data);
+    delete: function(req, res) {
+        if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+            var print = function(data) {
+                res.json(data);
+            }
+            Articles.delete(req.body, print);
+        } else {
+            res.json({
+                value: "false",
+                comment: "Articles-id is incorrect"
+            });
         }
-        Articles.find(req.body, print);
     },
-    findlimited: function (req, res) {
-        var print = function (data) {
+    find: function(req, res) {
+        function callback(data) {
             res.json(data);
-        }
-        Articles.findlimited(req.body, print);
+        };
+        Articles.find(req.body, callback);
     },
-    findone: function (req, res) {
-        var print = function (data) {
-            res.json(data);
+    findone: function(req, res) {
+        if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+            var print = function(data) {
+                res.json(data);
+            }
+            Articles.findone(req.body, print);
+        } else {
+            res.json({
+                value: "false",
+                comment: "Articles-id is incorrect"
+            });
         }
-        Articles.findone(req.body, print);
     },
-    delete: function (req, res) {
-        var print = function (data) {
+    findlimited: function(req, res) {
+        function callback(data) {
             res.json(data);
-        }
-        Articles.delete(req.body, print);
+        };
+        Articles.findlimited(req.body, callback);
     }
 };

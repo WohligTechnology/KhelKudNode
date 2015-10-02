@@ -1,32 +1,61 @@
 module.exports = {
-    save: function (req, res) {
-        var print = function (data) {
-            res.json(data);
+    save: function(req, res) {
+        if (req.body._id) {
+            if (req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+                ads();
+            } else {
+                res.json({
+                    value: "false",
+                    comment: "Ads-id is incorrect"
+                });
+            }
+        } else {
+            ads();
         }
-        Ads.save(req.body, print);
+
+        function ads() {
+            var print = function(data) {
+                res.json(data);
+            }
+            Ads.save(req.body, print);
+        }
     },
-    find: function (req, res) {
-        var print = function (data) {
-            res.json(data);
+    delete: function(req, res) {
+        if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+            var print = function(data) {
+                res.json(data);
+            }
+            Ads.delete(req.body, print);
+        } else {
+            res.json({
+                value: "false",
+                comment: "Ads-id is incorrect"
+            });
         }
-        Ads.find(req.body, print);
     },
-    findlimited: function (req, res) {
-        var print = function (data) {
+    find: function(req, res) {
+        function callback(data) {
             res.json(data);
-        }
-        Ads.findlimited(req.body, print);
+        };
+        Ads.find(req.body, callback);
     },
-    findone: function (req, res) {
-        var print = function (data) {
-            res.json(data);
+    findone: function(req, res) {
+        if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+            var print = function(data) {
+                res.json(data);
+            }
+            Ads.findone(req.body, print);
+        } else {
+            res.json({
+                value: "false",
+                comment: "Ads-id is incorrect"
+            });
         }
-        Ads.findone(req.body, print);
     },
-    delete: function (req, res) {
-        var print = function (data) {
+    findlimited: function(req, res) {
+        function callback(data) {
             res.json(data);
-        }
-        Ads.delete(req.body, print);
+        };
+        Ads.findlimited(req.body, callback);
     }
 };
