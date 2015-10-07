@@ -64,6 +64,12 @@ module.exports = {
         }
         User.searchmail(req.body, print);
     },
+    countusers: function (req, res) {
+        var print = function (data) {
+            res.json(data);
+        }
+        User.countusers(req.body, print);
+    },
     downloadE: function (req, res) {
         var path = './assets/docs/Event_Rule.pdf';
         var image = sails.fs.readFileSync(path);

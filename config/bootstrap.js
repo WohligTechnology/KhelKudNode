@@ -9,7 +9,7 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.bootstrap.html
  */
 
-module.exports.bootstrap = function (cb) {
+module.exports.bootstrap = function(cb) {
     sails.Db = require('mongodb').Db,
         sails.MongoClient = require('mongodb').MongoClient,
         sails.ISODate = require('mongodb').ISODate,
@@ -25,10 +25,11 @@ module.exports.bootstrap = function (cb) {
         sails.md5 = require('MD5'),
         sails.moment = require('moment'),
         sails.fs = require('fs'),
+        sails.lwip = require('lwip'),
         sails.xlsxj = require("xlsx-to-json"),
         // Connection URL
         sails.url = 'mongodb://localhost:27017/bherpobackend';
-    sails.query = function (myfunc) {
+    sails.query = function(myfunc) {
             sails.MongoClient.connect(sails.url, myfunc);
         }
         // It's very important to trigger this callback method when you are finished
