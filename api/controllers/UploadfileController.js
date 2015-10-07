@@ -6,7 +6,7 @@ module.exports = {
                 var oldpath = n.fd;
                 var source = sails.fs.createReadStream(n.fd);
                 n.fd = n.fd.split('\\').pop().split('/').pop();
-                var dest = sails.fs.createWriteStream('./auraimg/' + n.fd);
+                var dest = sails.fs.createWriteStream('./bherpoimg/' + n.fd);
                 source.pipe(dest);
                 source.on('end', function() {
                     sails.fs.unlink(oldpath, function(data) {
@@ -67,7 +67,7 @@ module.exports = {
         }
 
         var file = req.query.file;
-        var filepath = './auraimg/' + file;
+        var filepath = './bherpoimg/' + file;
         var newheight = req.query.height;
         var newwidth = req.query.width;
         var isfile = sails.fs.existsSync(filepath);
