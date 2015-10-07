@@ -1,6 +1,3 @@
-var request = require("request").defaults({
-    encoding: null 
-});
 module.exports = {
     uploadfile: function(req, res) {
         req.file("file").upload(function(err, uploadedFiles) {
@@ -91,18 +88,5 @@ module.exports = {
                 checknewfile(filepath, newwidth, newheight);
             }
         }
-    },
-    getupload: function(req, res) {
-        request.get("http://wohlig.co.in/auraimg/171.jpg", function(err, d2, imagebuf) {
-            if (err) {
-                console.log(err);
-                res.json({
-                    comment: "No data found"
-                });
-            } else if (imagebuf) {
-                res.set('Content-Type', "image/jpeg");
-                res.send(new Buffer(imagebuf));
-            }
-        });
     }
 };
