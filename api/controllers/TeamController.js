@@ -76,6 +76,12 @@ module.exports = {
         }
         Team.searchmail(req.body, print);
     },
+    findteam: function(req, res) {
+        var print = function(data) {
+            res.json(data);
+        }
+        Team.findteam(req.body, print);
+    },
     excelobject: function(req, res) {
         sails.query(function(err, db) {
             if (err) {

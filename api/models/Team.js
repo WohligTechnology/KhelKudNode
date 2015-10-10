@@ -101,7 +101,14 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("team").find().toArray(function(err, found) {
+                db.collection("team").find({}, {
+                    "_id": 1,
+                    "teamname": 1,
+                    "image": 1,
+                    "points": 1
+                }).sort({
+                    "teamname": 1
+                }).toArray(function(err, found) {
                     if (err) {
                         callback({
                             value: false
@@ -416,4 +423,40 @@ module.exports = {
             }
         });
     },
+    findteam: function(data, callback) {
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false,
+                    comment: "Error"
+                });
+            } else if (db) {
+                db.collection("team").find({
+                    "pincode.pincode": data.pincode
+                }, {
+                    "_id": 1,
+                    "teamname": 1,
+                    "image": 1
+                }).toArray(function(err, data2) {
+                    if (data2 && data2[0]) {
+                        callback(data2[0]);
+                        db.close();
+                    } else if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No such pincode"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
+    }
 };
