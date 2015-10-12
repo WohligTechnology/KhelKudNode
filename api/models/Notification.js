@@ -71,14 +71,16 @@ module.exports = {
         });
     },
     find: function(data, callback) {
+        var i = 0;
+        var user = sails.ObjectID(data.user);
+        delete data.user;
         sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
                     value: false
                 });
-            }
-            if (db) {
+            }else if (db) {
                 db.collection("notification").find().toArray(function(err, found) {
                     if (err) {
                         callback({
@@ -86,8 +88,49 @@ module.exports = {
                         });
                         db.close();
                     } else if (found && found[0]) {
-                        callback(found);
-                        db.close();
+                        _.each(found, function(n) {
+                            db.collection("loginuser").aggregate([{
+                                $match: {
+                                    _id: user
+                                }
+                            }, {
+                                $unwind: "$hotnotification"
+                            }, {
+                                $match: {
+                                    "hotnotification.notification": sails.ObjectID(n._id)
+                                }
+                            }, {
+                                $project: {
+                                    _id: 0,
+                                    "hotnotification.clicks": 1
+                                }
+                            }]).toArray(function(err, data2) {
+                                if (err) {
+                                    console.log(err);
+                                    i++;
+                                    if (i == found.length) {
+                                        callback2();
+                                    }
+                                } else if (data2 && data2[0] && data2[0].hotnotification) {
+                                    i++;
+                                    n.clicks = data2[0].hotnotification.clicks;
+                                    if (i == found.length) {
+                                        callback2();
+                                    }
+                                } else {
+                                    i++;
+                                    console.log("No data found");
+                                    if (i == found.length) {
+                                        callback2();
+                                    }
+                                }
+
+                                function callback2() {
+                                    callback( sails._.sortByOrder(found, ['clicks'], ['desc']));
+                                    db.close();
+                                }
+                            });
+                        });
                     } else {
                         callback({
                             value: false,

@@ -37,7 +37,12 @@ module.exports = {
                     });
                 } else {
                     var loginuser = sails.ObjectID(data._id);
-                    delete data._id
+                    delete data._id;
+                    if (data.hotnotification) {
+                        _.each(data.hotnotification, function(n) {
+                            n.notification = sails.ObjectID(n.notification);
+                        });
+                    }
                     db.collection('loginuser').update({
                         _id: loginuser
                     }, {
@@ -214,29 +219,30 @@ module.exports = {
                 callback({
                     value: false
                 });
+            } else if (db) {
+                db.collection('loginuser').remove({
+                    _id: sails.ObjectID(data._id)
+                }, function(err, deleted) {
+                    if (deleted) {
+                        callback({
+                            value: true
+                        });
+                        db.close();
+                    } else if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No data found"
+                        });
+                        db.close();
+                    }
+                });
             }
-            db.collection('loginuser').remove({
-                _id: sails.ObjectID(data._id)
-            }, function(err, deleted) {
-                if (deleted) {
-                    callback({
-                        value: true
-                    });
-                    db.close();
-                } else if (err) {
-                    console.log(err);
-                    callback({
-                        value: false
-                    });
-                    db.close();
-                } else {
-                    callback({
-                        value: false,
-                        comment: "No data found"
-                    });
-                    db.close();
-                }
-            });
         });
     }
 };
