@@ -14,9 +14,7 @@ module.exports = {
                     });
                 });
                 source.on('error', function(err) {
-                    if (err) {
-                        console.log(err);
-                    }
+                    console.log(err);
                 });
             });
             return res.json({
