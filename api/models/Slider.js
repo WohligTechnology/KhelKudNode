@@ -10,7 +10,7 @@ module.exports = {
             if (db) {
                 if (!data._id) {
                     data._id = sails.ObjectID();
-                    db.collection('notification').insert(data, function(err, created) {
+                    db.collection('slider').insert(data, function(err, created) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -33,10 +33,10 @@ module.exports = {
                         }
                     });
                 } else {
-                    var notification = sails.ObjectID(data._id);
+                    var slider = sails.ObjectID(data._id);
                     delete data._id
-                    db.collection('notification').update({
-                        _id: notification
+                    db.collection('slider').update({
+                        _id: slider
                     }, {
                         $set: data
                     }, function(err, updated) {
@@ -71,65 +71,23 @@ module.exports = {
         });
     },
     find: function(data, callback) {
-        var i = 0;
-        var user = sails.ObjectID(data.user);
-        delete data.user;
         sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
                     value: false
                 });
-            } else if (db) {
-                db.collection("notification").find().toArray(function(err, found) {
+            }
+            if (db) {
+                db.collection("slider").find().toArray(function(err, found) {
                     if (err) {
                         callback({
                             value: false
                         });
                         db.close();
                     } else if (found && found[0]) {
-                        _.each(found, function(n) {
-                            db.collection("loginuser").aggregate([{
-                                $match: {
-                                    _id: user
-                                }
-                            }, {
-                                $unwind: "$hotnotification"
-                            }, {
-                                $match: {
-                                    "hotnotification.notification": sails.ObjectID(n._id)
-                                }
-                            }, {
-                                $project: {
-                                    _id: 0,
-                                    "hotnotification.clicks": 1
-                                }
-                            }]).toArray(function(err, data2) {
-                                if (err) {
-                                    console.log(err);
-                                    i++;
-                                    if (i == found.length) {
-                                        callback2();
-                                    }
-                                } else if (data2 && data2[0] && data2[0].hotnotification) {
-                                    i++;
-                                    n.clicks = data2[0].hotnotification.clicks;
-                                    if (i == found.length) {
-                                        callback2();
-                                    }
-                                } else {
-                                    i++;
-                                    if (i == found.length) {
-                                        callback2();
-                                    }
-                                }
-
-                                function callback2() {
-                                    callback(sails._.sortByOrder(found, ['clicks'], ['desc']));
-                                    db.close();
-                                }
-                            });
-                        });
+                        callback(found[0]);
+                        db.close();
                     } else {
                         callback({
                             value: false,
@@ -159,8 +117,8 @@ module.exports = {
                 callbackfunc1();
 
                 function callbackfunc1() {
-                    db.collection("notification").count({
-                        content: {
+                    db.collection("slider").count({
+                        title: {
                             '$regex': check
                         }
                     }, function(err, number) {
@@ -184,8 +142,8 @@ module.exports = {
                     });
 
                     function callbackfunc() {
-                        db.collection("notification").find({
-                            content: {
+                        db.collection("slider").find({
+                            title: {
                                 '$regex': check
                             }
                         }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
@@ -222,7 +180,7 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("notification").find({
+                db.collection("slider").find({
                     _id: sails.ObjectID(data._id)
                 }).toArray(function(err, data2) {
                     if (err) {
@@ -254,7 +212,7 @@ module.exports = {
                     value: false
                 });
             }
-            db.collection('notification').remove({
+            db.collection('slider').remove({
                 _id: sails.ObjectID(data._id)
             }, function(err, deleted) {
                 if (deleted) {
