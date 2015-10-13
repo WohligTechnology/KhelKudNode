@@ -3,22 +3,22 @@ module.exports = {
     save: function(req, res) {
         if (req.body._id) {
             if (req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
-                gallery();
+                folder();
             } else {
                 res.json({
                     value: "false",
-                    comment: "Gallery-id is incorrect"
+                    comment: "Folder-id is incorrect"
                 });
             }
         } else {
-            gallery();
+            folder();
         }
 
-        function gallery() {
+        function folder() {
             var print = function(data) {
                 res.json(data);
             }
-            Gallery.save(req.body, print);
+            Folder.save(req.body, print);
         }
     },
     delete: function(req, res) {
@@ -26,11 +26,11 @@ module.exports = {
             var print = function(data) {
                 res.json(data);
             }
-            Gallery.delete(req.body, print);
+            Folder.delete(req.body, print);
         } else {
             res.json({
                 value: "false",
-                comment: "Gallery-id is incorrect"
+                comment: "Folder-id is incorrect"
             });
         }
     },
@@ -38,18 +38,18 @@ module.exports = {
         function callback(data) {
             res.json(data);
         };
-        Gallery.find(req.body, callback);
+        Folder.find(req.body, callback);
     },
     findone: function(req, res) {
         if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
             var print = function(data) {
                 res.json(data);
             }
-            Gallery.findone(req.body, print);
+            Folder.findone(req.body, print);
         } else {
             res.json({
                 value: "false",
-                comment: "Gallery-id is incorrect"
+                comment: "Folder-id is incorrect"
             });
         }
     },
@@ -57,6 +57,6 @@ module.exports = {
         function callback(data) {
             res.json(data);
         };
-        Gallery.findlimited(req.body, callback);
+        Folder.findlimited(req.body, callback);
     }
 };

@@ -10,7 +10,7 @@ module.exports = {
             if (db) {
                 if (!data._id) {
                     data._id = sails.ObjectID();
-                    db.collection('notification').insert(data, function(err, created) {
+                    db.collection('folder').insert(data, function(err, created) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -33,10 +33,10 @@ module.exports = {
                         }
                     });
                 } else {
-                    var notification = sails.ObjectID(data._id);
+                    var folder = sails.ObjectID(data._id);
                     delete data._id
-                    db.collection('notification').update({
-                        _id: notification
+                    db.collection('folder').update({
+                        _id: folder
                     }, {
                         $set: data
                     }, function(err, updated) {
@@ -77,8 +77,9 @@ module.exports = {
                 callback({
                     value: false
                 });
-            } else if (db) {
-                db.collection("notification").find().toArray(function(err, found) {
+            }
+            if (db) {
+                db.collection("folder").find().toArray(function(err, found) {
                     if (err) {
                         callback({
                             value: false
@@ -86,38 +87,6 @@ module.exports = {
                         db.close();
                     } else if (found && found[0]) {
                         callback(found);
-                        db.close();
-                    } else {
-                        callback({
-                            value: false,
-                            comment: "No data found"
-                        });
-                        db.close();
-                    }
-                });
-            }
-        });
-    },
-    findhotnotify: function(data, callback) {
-        sails.query(function(err, db) {
-            if (err) {
-                console.log(err);
-                callback({
-                    value: false
-                });
-            } else if (db) {
-                db.collection("notification").find({
-                    clicks: {
-                        $gt: 0
-                    }
-                }).toArray(function(err, found) {
-                    if (err) {
-                        callback({
-                            value: false
-                        });
-                        db.close();
-                    } else if (found && found[0]) {
-                        callback(sails._.sortByOrder(found, ['clicks'], ['desc']));
                         db.close();
                     } else {
                         callback({
@@ -148,8 +117,8 @@ module.exports = {
                 callbackfunc1();
 
                 function callbackfunc1() {
-                    db.collection("notification").count({
-                        content: {
+                    db.collection("folder").count({
+                        title: {
                             '$regex': check
                         }
                     }, function(err, number) {
@@ -173,8 +142,8 @@ module.exports = {
                     });
 
                     function callbackfunc() {
-                        db.collection("notification").find({
-                            content: {
+                        db.collection("folder").find({
+                            title: {
                                 '$regex': check
                             }
                         }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
@@ -211,7 +180,7 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("notification").find({
+                db.collection("folder").find({
                     _id: sails.ObjectID(data._id)
                 }).toArray(function(err, data2) {
                     if (err) {
@@ -221,7 +190,6 @@ module.exports = {
                         });
                         db.close();
                     } else if (data2 && data2[0]) {
-                        delete data2[0].password;
                         callback(data2[0]);
                         db.close();
                     } else {
@@ -243,7 +211,7 @@ module.exports = {
                     value: false
                 });
             }
-            db.collection('notification').remove({
+            db.collection('folder').remove({
                 _id: sails.ObjectID(data._id)
             }, function(err, deleted) {
                 if (deleted) {

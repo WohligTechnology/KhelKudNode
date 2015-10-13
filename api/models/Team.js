@@ -147,7 +147,7 @@ module.exports = {
 
                 function callbackfunc1() {
                     db.collection("team").count({
-                        name: {
+                        teamname: {
                             '$regex': check
                         }
                     }, function(err, number) {
@@ -172,7 +172,7 @@ module.exports = {
 
                     function callbackfunc() {
                         db.collection("team").find({
-                            name: {
+                            teamname: {
                                 '$regex': check
                             }
                         }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
