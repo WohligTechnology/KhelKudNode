@@ -46,6 +46,12 @@ module.exports = {
         };
         Loginuser.find(req.body, callback);
     },
+    adminlogin: function(req, res) {
+        function callback(data) {
+            res.json(data);
+        };
+        Loginuser.adminlogin(req.body, callback);
+    },
     findone: function(req, res) {
         if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
             var print = function(data) {
