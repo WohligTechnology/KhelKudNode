@@ -4,7 +4,7 @@ module.exports = {
             data.password = sails.md5(data.password);
             sails.query(function(err, db) {
                 if (db) {
-                    db.collection('user').find({
+                    db.collection('loginuser').find({
                         email: data.email,
                         password: data.password,
                         accesslevel: "admin"
