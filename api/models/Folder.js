@@ -81,7 +81,6 @@ module.exports = {
         }
     },
     find: function(data, callback) {
-        var i = 0;
         sails.query(function(err, db) {
             if (err) {
                 console.log(err);
@@ -97,19 +96,8 @@ module.exports = {
                         });
                         db.close();
                     } else if (found && found[0]) {
-                        _.each(found, function(n) {
-                            n.thumb = sails._.first(n.image);
-                            delete n.image;
-                            i++;
-                            if (i == found.length) {
-                                callback2();
-                            }
-                        });
-
-                        function callback2() {
-                            callback(found);
-                            db.close();
-                        }
+                        callback(found);
+                        db.close();
                     } else {
                         callback({
                             value: false,
@@ -123,9 +111,9 @@ module.exports = {
     },
     //Findlimited
     findlimited: function(data, callback) {
+        var i = 0;
         var newreturns = {};
         newreturns.data = [];
-        var check = new RegExp(data.search, "i");
         var pagesize = parseInt(data.pagesize);
         var pagenumber = parseInt(data.pagenumber);
         sails.query(function(err, db) {
@@ -139,11 +127,7 @@ module.exports = {
                 callbackfunc1();
 
                 function callbackfunc1() {
-                    db.collection("folder").count({
-                        title: {
-                            '$regex': check
-                        }
-                    }, function(err, number) {
+                    db.collection("folder").count({}, function(err, number) {
                         if (number && number != "") {
                             newreturns.total = number;
                             newreturns.totalpages = Math.ceil(number / data.pagesize);
@@ -164,11 +148,7 @@ module.exports = {
                     });
 
                     function callbackfunc() {
-                        db.collection("folder").find({
-                            title: {
-                                '$regex': check
-                            }
-                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
+                        db.collection("folder").find({}).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
                             if (err) {
                                 callback({
                                     value: false
@@ -176,9 +156,20 @@ module.exports = {
                                 console.log(err);
                                 db.close();
                             } else if (found && found[0]) {
-                                newreturns.data = found;
-                                callback(newreturns);
-                                db.close();
+                                _.each(found, function(n) {
+                                    n.thumb = sails._.first(n.image);
+                                    delete n.image;
+                                    i++;
+                                    newreturns.data.push(n);
+                                    if (i == found.length) {
+                                        callback2();
+                                    }
+                                });
+
+                                function callback2() {
+                                    callback(newreturns);
+                                    db.close();
+                                }
                             } else {
                                 callback({
                                     value: false,
