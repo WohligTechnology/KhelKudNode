@@ -76,5 +76,18 @@ module.exports = {
             res.json(data);
         };
         Loginuser.countusers(req.body, callback);
+    },
+    countnotify: function(req, res) {
+        if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+            var print = function(data) {
+                res.json(data);
+            }
+            Loginuser.countnotify(req.body, print);
+        } else {
+            res.json({
+                value: "false",
+                comment: "Loginuser-id is incorrect"
+            });
+        }
     }
 };

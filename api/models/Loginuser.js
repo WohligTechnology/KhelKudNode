@@ -428,5 +428,37 @@ module.exports = {
                 });
             }
         });
+    },
+    countnotify: function(data, callback) {
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: "false"
+                });
+            }
+            if (db) {
+                db.collection("notification").count({}, function(err, number) {
+                    if (number != null) {
+                        Loginuser.findone(data, function(response) {
+                            callback(number - response.notification.length);
+                            db.close();
+                        });
+                    } else if (err) {
+                        callback({
+                            value: "false",
+                            comment: "Error"
+                        });
+                        db.close();
+                    } else {
+                        callback({
+                            value: "false",
+                            comment: "No data found"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
     }
 };
