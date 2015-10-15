@@ -129,6 +129,8 @@ module.exports = {
     },
     //Findlimited
     findlimited: function(data, callback) {
+        var user = {};
+        user._id = sails.ObjectID(data.user);
         var newreturns = {};
         newreturns.data = [];
         var pagesize = parseInt(data.pagesize);
@@ -173,8 +175,43 @@ module.exports = {
                                 console.log(err);
                                 db.close();
                             } else if (found && found[0]) {
-                                newreturns.data = found;
-                                callback(newreturns);
+                                Loginuser.findone(user, function(response) {
+                                    if (response.notification && response.notification[0]) {
+                                        var i = 0;
+                                        _.each(response.notification, function(m) {
+                                            _.each(found, function(n) {
+                                                if (m.notification.toString() == n._id.toString()) {
+                                                    n.click = 1;
+                                                    newreturns.data.push(n);
+                                                    i++;
+                                                    if (i == found.length) {
+                                                        callback(newreturns);
+                                                        db.close();
+                                                    }
+                                                } else {
+                                                    n.click = 0;
+                                                    newreturns.data.push(n);
+                                                    i++;
+                                                    if (i == found.length) {
+                                                        callback(newreturns);
+                                                        db.close();
+                                                    }
+                                                }
+                                            });
+                                        });
+                                    } else {
+                                        var i = 0;
+                                        _.each(found, function(n) {
+                                            n.click = 0;
+                                            newreturns.data.push(n);
+                                            i++;
+                                            if (i == found.length) {
+                                                callback(newreturns);
+                                                db.close();
+                                            }
+                                        });
+                                    }
+                                });
                                 db.close();
                             } else {
                                 callback({
