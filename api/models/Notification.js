@@ -183,11 +183,15 @@ module.exports = {
                                                 if (m.notification.toString() == n._id.toString()) {
                                                     n.click = 1;
                                                 }
-                                                newreturns.data.push(n);
+                                                var index = sails._.findIndex(newreturns.data, function(chr) {
+                                                    return chr._id == n._id;
+                                                });
+                                                if (index == -1) {
+                                                    newreturns.data.push(n);
+                                                }
                                             });
                                             k++;
                                             if (k == response.notification.length) {
-                                                console.log(newreturns.data);
                                                 callback(newreturns);
                                                 db.close();
                                             }
