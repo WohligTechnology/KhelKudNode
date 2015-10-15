@@ -1,5 +1,8 @@
 module.exports = {
     save: function(data, callback) {
+        if (data.timestamp && data.timestamp != "") {
+            data.timestamp = new Date();
+        }
         sails.query(function(err, db) {
             if (err) {
                 console.log(err);
@@ -71,6 +74,7 @@ module.exports = {
         });
     },
     find: function(data, callback) {
+        var i = 0;
         sails.query(function(err, db) {
             if (err) {
                 console.log(err);
@@ -86,8 +90,19 @@ module.exports = {
                         });
                         db.close();
                     } else if (found && found[0]) {
-                        callback(found);
-                        db.close();
+                        _.each(found, function(n) {
+                            n.thumb = sails._.first(n.image);
+                            delete n.image;
+                            i++;
+                            if (i == found.length) {
+                                callback2();
+                            }
+                        });
+
+                        function callback2() {
+                            callback(found);
+                            db.close();
+                        }
                     } else {
                         callback({
                             value: false,
