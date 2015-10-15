@@ -70,5 +70,11 @@ module.exports = {
             res.json(data);
         };
         Loginuser.findlimited(req.body, callback);
+    },
+    countusers: function(req, res) {
+        function callback(data) {
+            res.json(data);
+        };
+        Loginuser.countusers(req.body, callback);
     }
 };

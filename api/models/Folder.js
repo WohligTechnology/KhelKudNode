@@ -1,77 +1,84 @@
 module.exports = {
     save: function(data, callback) {
-        if (data.timestamp && data.timestamp != "") {
-            data.timestamp = new Date();
-        }
-        sails.query(function(err, db) {
-            if (err) {
-                console.log(err);
-                callback({
-                    value: false
-                });
+        if (data.image && data.image[0]) {
+            if (data.timestamp && data.timestamp != "") {
+                data.timestamp = new Date();
             }
-            if (db) {
-                if (!data._id) {
-                    data._id = sails.ObjectID();
-                    db.collection('folder').insert(data, function(err, created) {
-                        if (err) {
-                            console.log(err);
-                            callback({
-                                value: false,
-                                comment: "Error"
-                            });
-                            db.close();
-                        } else if (created) {
-                            callback({
-                                value: true,
-                                id: data._id
-                            });
-                            db.close();
-                        } else {
-                            callback({
-                                value: false,
-                                comment: "Not created"
-                            });
-                            db.close();
-                        }
-                    });
-                } else {
-                    var folder = sails.ObjectID(data._id);
-                    delete data._id
-                    db.collection('folder').update({
-                        _id: folder
-                    }, {
-                        $set: data
-                    }, function(err, updated) {
-                        if (err) {
-                            console.log(err);
-                            callback({
-                                value: false,
-                                comment: "Error"
-                            });
-                            db.close();
-                        } else if (updated.result.nModified != 0 && updated.result.n != 0) {
-                            callback({
-                                value: true
-                            });
-                            db.close();
-                        } else if (updated.result.nModified == 0 && updated.result.n != 0) {
-                            callback({
-                                value: true,
-                                comment: "Data already updated"
-                            });
-                            db.close();
-                        } else {
-                            callback({
-                                value: false,
-                                comment: "No data found"
-                            });
-                            db.close();
-                        }
+            sails.query(function(err, db) {
+                if (err) {
+                    console.log(err);
+                    callback({
+                        value: false
                     });
                 }
-            }
-        });
+                if (db) {
+                    if (!data._id) {
+                        data._id = sails.ObjectID();
+                        db.collection('folder').insert(data, function(err, created) {
+                            if (err) {
+                                console.log(err);
+                                callback({
+                                    value: false,
+                                    comment: "Error"
+                                });
+                                db.close();
+                            } else if (created) {
+                                callback({
+                                    value: true,
+                                    id: data._id
+                                });
+                                db.close();
+                            } else {
+                                callback({
+                                    value: false,
+                                    comment: "Not created"
+                                });
+                                db.close();
+                            }
+                        });
+                    } else {
+                        var folder = sails.ObjectID(data._id);
+                        delete data._id
+                        db.collection('folder').update({
+                            _id: folder
+                        }, {
+                            $set: data
+                        }, function(err, updated) {
+                            if (err) {
+                                console.log(err);
+                                callback({
+                                    value: false,
+                                    comment: "Error"
+                                });
+                                db.close();
+                            } else if (updated.result.nModified != 0 && updated.result.n != 0) {
+                                callback({
+                                    value: true
+                                });
+                                db.close();
+                            } else if (updated.result.nModified == 0 && updated.result.n != 0) {
+                                callback({
+                                    value: true,
+                                    comment: "Data already updated"
+                                });
+                                db.close();
+                            } else {
+                                callback({
+                                    value: false,
+                                    comment: "No data found"
+                                });
+                                db.close();
+                            }
+                        });
+                    }
+                }
+            });
+        } else {
+            callback({
+                value: false,
+                comment: "Please enter correct parameters"
+            });
+        }
     },
     find: function(data, callback) {
         var i = 0;

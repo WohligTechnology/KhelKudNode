@@ -33,6 +33,8 @@ module.exports = {
                         }
                     });
                 } else {
+                    var user = data.user;
+                    delete data.user;
                     var notification = sails.ObjectID(data._id);
                     delete data._id
                     db.collection('notification').update({
@@ -47,16 +49,11 @@ module.exports = {
                                 comment: "Error"
                             });
                             db.close();
-                        } else if (updated.result.nModified != 0 && updated.result.n != 0) {
-                            callback({
-                                value: true
-                            });
-                            db.close();
-                        } else if (updated.result.nModified == 0 && updated.result.n != 0) {
-                            callback({
-                                value: true,
-                                comment: "Data already updated"
-                            });
+                        } else if (updated) {
+                            var newdata = {};
+                            newdata.notification = notification;
+                            newdata._id = user;
+                            Loginuser.savenoti(newdata, callback);
                             db.close();
                         } else {
                             callback({
