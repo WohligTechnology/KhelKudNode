@@ -441,8 +441,13 @@ module.exports = {
                 db.collection("notification").count({}, function(err, number) {
                     if (number != null) {
                         Loginuser.findone(data, function(response) {
-                            callback(number - response.notification.length);
-                            db.close();
+                            if (response.notification && response.notification[0]) {
+                                callback(number - response.notification.length);
+                                db.close();
+                            } else {
+                                callback(number);
+                                db.close();
+                            }
                         });
                     } else if (err) {
                         callback({
