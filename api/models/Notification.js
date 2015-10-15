@@ -131,7 +131,6 @@ module.exports = {
     findlimited: function(data, callback) {
         var newreturns = {};
         newreturns.data = [];
-        var check = new RegExp(data.search, "i");
         var pagesize = parseInt(data.pagesize);
         var pagenumber = parseInt(data.pagenumber);
         sails.query(function(err, db) {
@@ -145,11 +144,7 @@ module.exports = {
                 callbackfunc1();
 
                 function callbackfunc1() {
-                    db.collection("notification").count({
-                        content: {
-                            '$regex': check
-                        }
-                    }, function(err, number) {
+                    db.collection("notification").count({}, function(err, number) {
                         if (number && number != "") {
                             newreturns.total = number;
                             newreturns.totalpages = Math.ceil(number / data.pagesize);
@@ -170,11 +165,7 @@ module.exports = {
                     });
 
                     function callbackfunc() {
-                        db.collection("notification").find({
-                            content: {
-                                '$regex': check
-                            }
-                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
+                        db.collection("notification").find({}).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
                             if (err) {
                                 callback({
                                     value: false
