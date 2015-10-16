@@ -105,7 +105,8 @@ module.exports = {
                     "_id": 1,
                     "teamname": 1,
                     "image": 1,
-                    "points": 1
+                    "points": 1,
+                    "id":1
                 }).sort({
                     "teamname": 1
                 }).toArray(function(err, found) {
