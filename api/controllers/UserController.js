@@ -179,7 +179,7 @@ module.exports = {
                                                                 if (num < result.length) {
                                                                     setTimeout(function() {
                                                                         createuser(num);
-                                                                    }, 150);
+                                                                    }, 250);
                                                                 } else {
                                                                     res.json("Done");
                                                                 }
@@ -189,7 +189,7 @@ module.exports = {
                                                                 if (num < result.length) {
                                                                     setTimeout(function() {
                                                                         createuser(num);
-                                                                    }, 150);
+                                                                    }, 250);
                                                                 } else {
                                                                     res.json("Done");
                                                                 }
@@ -221,7 +221,7 @@ module.exports = {
                                                         if (num < result.length) {
                                                             setTimeout(function() {
                                                                 createuser(num);
-                                                            }, 150);
+                                                            }, 250);
                                                         } else {
                                                             res.json("Done");
                                                         }
@@ -231,7 +231,7 @@ module.exports = {
                                                         if (num < result.length) {
                                                             setTimeout(function() {
                                                                 createuser(num);
-                                                            }, 150);
+                                                            }, 250);
                                                         } else {
                                                             res.json("Done");
                                                         }
