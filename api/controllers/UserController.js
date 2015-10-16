@@ -185,7 +185,7 @@ module.exports = {
                                                                 if (num < result.length) {
                                                                     setTimeout(function() {
                                                                         createuser(num);
-                                                                    }, 500);
+                                                                    }, 10);
                                                                 } else {
                                                                     res.json("Done");
                                                                 }
@@ -195,7 +195,7 @@ module.exports = {
                                                                 if (num < result.length) {
                                                                     setTimeout(function() {
                                                                         createuser(num);
-                                                                    }, 500);
+                                                                    }, 10);
                                                                 } else {
                                                                     res.json("Done");
                                                                 }
@@ -227,7 +227,7 @@ module.exports = {
                                                         if (num < result.length) {
                                                             setTimeout(function() {
                                                                 createuser(num);
-                                                            }, 500);
+                                                            }, 10);
                                                         } else {
                                                             res.json("Done");
                                                         }
@@ -237,7 +237,7 @@ module.exports = {
                                                         if (num < result.length) {
                                                             setTimeout(function() {
                                                                 createuser(num);
-                                                            }, 500);
+                                                            }, 10);
                                                         } else {
                                                             res.json("Done");
                                                         }
