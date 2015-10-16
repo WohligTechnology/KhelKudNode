@@ -58,6 +58,12 @@ module.exports = {
         };
         User.findlimited(req.body, callback);
     },
+    deletedata: function(req, res) {
+        function callback(data) {
+            res.json(data);
+        };
+        User.deletedata(req.body, callback);
+    },
     searchmail: function(req, res) {
         var print = function(data) {
             res.json(data);
