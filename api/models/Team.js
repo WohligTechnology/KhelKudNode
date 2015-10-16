@@ -458,5 +458,67 @@ module.exports = {
                 });
             }
         });
+    },
+    deletedata: function(data, callback) {
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            db.collection('team').remove({}, function(err, data) {
+                if (err) {
+                    console.log(err);
+                    callback({
+                        value: false
+                    });
+                    db.close();
+                } else if (data) {
+                    db.collection('area').remove({}, function(err, data2) {
+                        if (err) {
+                            console.log(err);
+                            callback({
+                                value: false
+                            });
+                            db.close();
+                        } else if (data2) {
+                            db.collection("village").remove({}, function(err, data3) {
+                                if (err) {
+                                    console.log(err);
+                                    callback({
+                                        value: false
+                                    });
+                                    db.close();
+                                } else if (data3) {
+                                    callback({
+                                        value: true
+                                    });
+                                    db.close();
+                                } else {
+                                    callback({
+                                        value: false,
+                                        comment: "No data found"
+                                    });
+                                    db.close();
+                                }
+                            });
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "No data found"
+                            });
+                            db.close();
+                        }
+                    });
+                } else {
+                    callback({
+                        value: false,
+                        comment: "No data found"
+                    });
+                    db.close();
+                }
+            });
+        });
     }
 };

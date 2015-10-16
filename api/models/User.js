@@ -190,7 +190,7 @@ module.exports = {
 
                 function callbackfunc1() {
                     db.collection("user").count({
-                        firstname: {
+                        name: {
                             '$regex': check
                         }
                     }, function(err, number) {
@@ -215,7 +215,7 @@ module.exports = {
 
                     function callbackfunc() {
                         db.collection("user").find({
-                            firstname: {
+                            name: {
                                 '$regex': check
                             }
                         }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
@@ -370,6 +370,162 @@ module.exports = {
                         db.close();
                     }
                 });
+            }
+        });
+    },
+    findbyreg: function(data, callback) {
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("user").find({
+                    regno: m.regno
+                }).toArray(function(err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        callback(data2[0]);
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No data found"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
+    },
+    saveexceluser: function(data, callback) {
+        data.pincode = data.pincode.toString();
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                if (!data._id) {
+                    data._id = sails.ObjectID();
+                    db.collection("team").find({
+                        "pincode.pincode": data.pincode
+                    }, {
+                        "_id": 1,
+                        "teamname": 1
+                    }).toArray(function(err, data2) {
+                        if (data2 && data2[0]) {
+                            data.team = data2[0];
+                            saveuser();
+                        } else if (err) {
+                            console.log(err);
+                            callback({
+                                value: false
+                            });
+                            db.close();
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "No such pincode"
+                            });
+                            db.close();
+                        }
+                    });
+
+                    function saveuser() {
+                        db.collection('user').insert(data, function(err, created) {
+                            if (err) {
+                                console.log(err);
+                                callback({
+                                    value: false,
+                                    comment: "Error"
+                                });
+                                db.close();
+                            } else if (created) {
+                                callback({
+                                    value: true,
+                                    id: data._id
+                                });
+                                db.close();
+                            } else {
+                                callback({
+                                    value: false,
+                                    comment: "Not created"
+                                });
+                                db.close();
+                            }
+                        });
+                    }
+                } else {
+                    var user = sails.ObjectID(data._id);
+                    delete data._id;
+                    db.collection("team").find({
+                        "pincode.pincode": data.pincode
+                    }, {
+                        "_id": 1,
+                        "teamname": 1
+                    }).toArray(function(err, data2) {
+                        if (data2 && data2[0]) {
+                            data.team = data2[0];
+                            edituser();
+                        } else if (err) {
+                            console.log(err);
+                            callback({
+                                value: false
+                            });
+                            db.close();
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "No such pincode"
+                            });
+                            db.close();
+                        }
+                    });
+
+                    function edituser() {
+                        db.collection('user').update({
+                            _id: user
+                        }, {
+                            $set: data
+                        }, function(err, updated) {
+                            if (err) {
+                                console.log(err);
+                                callback({
+                                    value: false,
+                                    comment: "Error"
+                                });
+                                db.close();
+                            } else if (updated.result.nModified != 0 && updated.result.n != 0) {
+                                callback({
+                                    value: true
+                                });
+                                db.close();
+                            } else if (updated.result.nModified == 0 && updated.result.n != 0) {
+                                callback({
+                                    value: true,
+                                    comment: "Data already updated"
+                                });
+                                db.close();
+                            } else {
+                                callback({
+                                    value: false,
+                                    comment: "No data found"
+                                });
+                                db.close();
+                            }
+                        });
+                    }
+                }
             }
         });
     }

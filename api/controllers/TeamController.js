@@ -33,6 +33,12 @@ module.exports = {
             });
         }
     },
+    deletedata: function(req, res) {
+        function callback(data) {
+            res.json(data);
+        };
+        Team.deletedata(req.body, callback);
+    },
     find: function(req, res) {
         function callback(data) {
             res.json(data);

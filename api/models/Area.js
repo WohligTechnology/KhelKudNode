@@ -384,5 +384,65 @@ module.exports = {
                 });
             }
         });
+    },
+    savemyarea: function(data, callback) {
+        var newdata = {};
+        newdata.name = data.area;
+        newdata._id = sails.ObjectID();
+        sails.query(function(err, db) {
+            var exit = 0;
+            var exitup = 0;
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                exit++;
+                db.collection("area").find({
+                    name: data.area
+                }).each(function(err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2 != null) {
+                        exitup++;
+                        callback({
+                            _id: data2._id,
+                            name: data2.name
+                        });
+                        db.close();
+                    } else {
+                        if (exit != exitup) {
+                            db.collection('area').insert(newdata, function(err, created) {
+                                if (err) {
+                                    console.log(err);
+                                    callback({
+                                        value: false
+                                    });
+                                    db.close();
+                                } else if (created) {
+                                    callback({
+                                        _id: newdata._id,
+                                        name: newdata.name
+                                    });
+                                    db.close();
+                                } else {
+                                    callback({
+                                        value: false,
+                                        comment: "No data found"
+                                    });
+                                    db.close();
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
     }
 };
