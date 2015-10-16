@@ -442,8 +442,14 @@ module.exports = {
                     if (number != null) {
                         Loginuser.findone(data, function(response) {
                             if (response.notification && response.notification[0]) {
-                                callback(number - response.notification.length);
-                                db.close();
+                                var num = number - response.notification.length;
+                                if (num <= 0) {
+                                    callback(0);
+                                    db.close();
+                                } else {
+                                    callback(num);
+                                    db.close();
+                                }
                             } else {
                                 callback(number);
                                 db.close();
