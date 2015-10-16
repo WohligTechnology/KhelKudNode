@@ -177,7 +177,6 @@ module.exports = {
                                                         }
                                                         m.registrationdate = new Date(m.registrationdate);
                                                         m.dob = new Date(m.registrationdate);
-                                                        delete m.sport;
                                                         User.saveexceluser(m, function(respons) {
                                                             if (respons.value && respons.value == true) {
                                                                 console.log(num);
@@ -204,6 +203,9 @@ module.exports = {
                                                     });
                                                 });
                                             } else {
+                                                m.sport = m.sport.split(" ").map(function(i) {
+                                                    return i[0].toUpperCase() + i.substring(1)
+                                                }).join(" ");
                                                 var sportindex = sails._.indexOf(allsports, m.sport);
                                                 var volunteerindex = sails._.indexOf(allvolunteer, m.sport);
                                                 var danceindex = sails._.indexOf(alldance, m.sport);
@@ -219,7 +221,6 @@ module.exports = {
                                                 } else if (m.sport == "Quiz") {
                                                     respo.quiz.push(m.sport);
                                                 }
-                                                delete m.sport;
                                                 User.saveexceluser(respo, function(respons) {
                                                     if (respons.value && respons.value == true) {
                                                         console.log(num);
