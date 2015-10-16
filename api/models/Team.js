@@ -106,7 +106,7 @@ module.exports = {
                     "teamname": 1,
                     "image": 1,
                     "points": 1,
-                    "id":1
+                    "id": 1
                 }).sort({
                     "teamname": 1
                 }).toArray(function(err, found) {
@@ -438,7 +438,8 @@ module.exports = {
                 }, {
                     "_id": 1,
                     "teamname": 1,
-                    "image": 1
+                    "image": 1,
+                    "id": 1
                 }).toArray(function(err, data2) {
                     if (data2 && data2[0]) {
                         callback(data2[0]);
