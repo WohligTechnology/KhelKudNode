@@ -1,6 +1,6 @@
 module.exports = {
     save: function(data, callback) {
-        var regno = 9912;
+        var regno = 9913;
         if (data.pincode) {
             data.pincode = data.pincode.toString();
         }
@@ -81,7 +81,7 @@ module.exports = {
                                         data.regno = data2[0].regno + 1;
                                         callme();
                                     } else {
-                                        data.regno = 9912;
+                                        data.regno = 9913;
                                         callme();
                                     }
                                 });
