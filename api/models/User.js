@@ -35,7 +35,8 @@ module.exports = {
                                 "pincode.pincode": data.pincode
                             }, {
                                 "_id": 1,
-                                "teamname": 1
+                                "teamname": 1,
+                                "email": 1
                             }).toArray(function(err, data2) {
                                 if (data2 && data2[0]) {
                                     data.team = data2[0];
@@ -96,6 +97,7 @@ module.exports = {
                                             db.close();
                                         } else if (created) {
                                             data.regno = data.regno.toString();
+                                            var name = data.firstname + " " + data.middlename + " " + data.lastname;
                                             if (data.regno.length == 4) {
                                                 var regnos = "R00" + data.regno;
                                             } else if (data.regno.length == 5) {
@@ -114,6 +116,9 @@ module.exports = {
                                                 "to": [{
                                                     "email": data.email,
                                                     "type": "to"
+                                                }, {
+                                                    "email": data.team.email,
+                                                    "type": "cc"
                                                 }],
                                                 "global_merge_vars": [{
                                                     "name": "events",
@@ -124,6 +129,12 @@ module.exports = {
                                                 }, {
                                                     "name": "team",
                                                     "content": data.team.teamname
+                                                }, {
+                                                    "name": "mob",
+                                                    "content": data.mobileno
+                                                }, {
+                                                    "name": "name",
+                                                    "content": name
                                                 }]
                                             };
                                             sails.mandrill_client.messages.sendTemplate({
@@ -158,7 +169,8 @@ module.exports = {
                         "pincode.pincode": data.pincode
                     }, {
                         "_id": 1,
-                        "teamname": 1
+                        "teamname": 1,
+                        "email": 1
                     }).toArray(function(err, data2) {
                         if (data2 && data2[0]) {
                             data.team = data2[0];
