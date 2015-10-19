@@ -160,28 +160,113 @@ module.exports = {
     },
     //Findlimited
     findlimited: function(data, callback) {
-        var user = {};
-        user._id = sails.ObjectID(data.user);
         var newreturns = {};
         newreturns.data = [];
         var pagesize = parseInt(data.pagesize);
         var pagenumber = parseInt(data.pagenumber);
-        sails.query(function(err, db) {
-            if (err) {
-                console.log(err);
-                callback({
-                    value: false
-                });
-            }
-            if (db) {
-                callbackfunc1();
+        if (data.user) {
+            var user = {};
+            user._id = sails.ObjectID(data.user);
+            sails.query(function(err, db) {
+                if (err) {
+                    console.log(err);
+                    callback({
+                        value: false
+                    });
+                }
+                if (db) {
+                    callbackfunc1();
 
-                function callbackfunc1() {
+                    function callbackfunc1() {
+                        db.collection("notification").count({}, function(err, number) {
+                            if (number && number != "") {
+                                newreturns.total = number;
+                                newreturns.totalpages = Math.ceil(number / data.pagesize);
+                                callbackfunc();
+                            } else if (err) {
+                                console.log(err);
+                                callback({
+                                    value: false
+                                });
+                                db.close();
+                            } else {
+                                callback({
+                                    value: false,
+                                    comment: "Count of null"
+                                });
+                                db.close();
+                            }
+                        });
+
+                        function callbackfunc() {
+                            db.collection("notification").find({}).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
+                                if (err) {
+                                    callback({
+                                        value: false
+                                    });
+                                    console.log(err);
+                                    db.close();
+                                } else if (found && found[0]) {
+                                    Loginuser.findone(user, function(response) {
+                                        if (response.notification && response.notification[0]) {
+                                            var k = 0;
+                                            _.each(response.notification, function(m) {
+                                                _.each(found, function(n) {
+                                                    if (m.notification.toString() == n._id.toString()) {
+                                                        n.click = 1;
+                                                    }
+                                                    var index = sails._.findIndex(newreturns.data, function(chr) {
+                                                        return chr._id == n._id;
+                                                    });
+                                                    if (index == -1) {
+                                                        newreturns.data.push(n);
+                                                    }
+                                                });
+                                                k++;
+                                                if (k == response.notification.length) {
+                                                    callback(newreturns);
+                                                    db.close();
+                                                }
+                                            });
+                                        } else {
+                                            var i = 0;
+                                            _.each(found, function(n) {
+                                                n.click = 0;
+                                                newreturns.data.push(n);
+                                                i++;
+                                                if (i == found.length) {
+                                                    callback(newreturns);
+                                                    db.close();
+                                                }
+                                            });
+                                        }
+                                    });
+                                    db.close();
+                                } else {
+                                    callback({
+                                        value: false,
+                                        comment: "No data found"
+                                    });
+                                    db.close();
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        } else {
+            sails.query(function(err, db) {
+                if (err) {
+                    console.log(err);
+                    callback({
+                        value: false
+                    });
+                } else if (db) {
                     db.collection("notification").count({}, function(err, number) {
                         if (number && number != "") {
                             newreturns.total = number;
                             newreturns.totalpages = Math.ceil(number / data.pagesize);
-                            callbackfunc();
+                            callbackfunc1();
                         } else if (err) {
                             console.log(err);
                             callback({
@@ -197,49 +282,16 @@ module.exports = {
                         }
                     });
 
-                    function callbackfunc() {
+                    function callbackfunc1() {
                         db.collection("notification").find({}).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
                             if (err) {
                                 callback({
                                     value: false
                                 });
-                                console.log(err);
                                 db.close();
                             } else if (found && found[0]) {
-                                Loginuser.findone(user, function(response) {
-                                    if (response.notification && response.notification[0]) {
-                                        var k = 0;
-                                        _.each(response.notification, function(m) {
-                                            _.each(found, function(n) {
-                                                if (m.notification.toString() == n._id.toString()) {
-                                                    n.click = 1;
-                                                }
-                                                var index = sails._.findIndex(newreturns.data, function(chr) {
-                                                    return chr._id == n._id;
-                                                });
-                                                if (index == -1) {
-                                                    newreturns.data.push(n);
-                                                }
-                                            });
-                                            k++;
-                                            if (k == response.notification.length) {
-                                                callback(newreturns);
-                                                db.close();
-                                            }
-                                        });
-                                    } else {
-                                        var i = 0;
-                                        _.each(found, function(n) {
-                                            n.click = 0;
-                                            newreturns.data.push(n);
-                                            i++;
-                                            if (i == found.length) {
-                                                callback(newreturns);
-                                                db.close();
-                                            }
-                                        });
-                                    }
-                                });
+                                newreturns.data = found;
+                                callback(newreturns);
                                 db.close();
                             } else {
                                 callback({
@@ -251,8 +303,8 @@ module.exports = {
                         });
                     }
                 }
-            }
-        });
+            });
+        }
     },
     //Findlimited
     findone: function(data, callback) {
