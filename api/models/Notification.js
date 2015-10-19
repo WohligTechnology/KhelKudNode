@@ -96,6 +96,10 @@ module.exports = {
         });
     },
     findhotnotify: function(data, callback) {
+        var newreturns = {};
+        newreturns.data = [];
+        var pagesize = parseInt(data.pagesize);
+        var pagenumber = parseInt(data.pagenumber);
         sails.query(function(err, db) {
             if (err) {
                 console.log(err);
@@ -103,27 +107,54 @@ module.exports = {
                     value: false
                 });
             } else if (db) {
-                db.collection("notification").find({
+                db.collection("notification").count({
                     clicks: {
                         $gt: 0
                     }
-                }).toArray(function(err, found) {
-                    if (err) {
+                }, function(err, number) {
+                    if (number && number != "") {
+                        newreturns.total = number;
+                        newreturns.totalpages = Math.ceil(number / data.pagesize);
+                        callbackfunc();
+                    } else if (err) {
+                        console.log(err);
                         callback({
                             value: false
                         });
                         db.close();
-                    } else if (found && found[0]) {
-                        callback(sails._.sortByOrder(found, ['clicks'], ['desc']));
-                        db.close();
                     } else {
                         callback({
                             value: false,
-                            comment: "No data found"
+                            comment: "Count of null"
                         });
                         db.close();
                     }
                 });
+
+                function callbackfunc() {
+                    db.collection("notification").find({
+                        clicks: {
+                            $gt: 0
+                        }
+                    }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
+                        if (err) {
+                            callback({
+                                value: false
+                            });
+                            db.close();
+                        } else if (found && found[0]) {
+                            newreturns.data = found;
+                            callback(sails._.sortByOrder(newreturns.data, ['clicks'], ['desc']));
+                            db.close();
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "No data found"
+                            });
+                            db.close();
+                        }
+                    });
+                }
             }
         });
     },

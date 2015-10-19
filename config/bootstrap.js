@@ -25,7 +25,11 @@ module.exports.bootstrap = function(cb) {
         sails.md5 = require('MD5'),
         sails.moment = require('moment'),
         sails.fs = require('fs'),
-        sails._=require('lodash'),
+        sails._ = require('lodash'),
+        sails.mandrill = require('mandrill-api/mandrill'),
+        sails.mandrill_client = new sails.mandrill.Mandrill('d_SuKWoJdHvaoeMf_892Nw'),
+        sails.fromName = "Bherpo",
+        sails.fromEmail = "bherponavneet@gmail.com",
         sails.lwip = require('lwip'),
         sails.xlsxj = require("xlsx-to-json"),
         // Connection URL

@@ -1,6 +1,9 @@
 module.exports = {
     save: function(data, callback) {
-        data.pincode = data.pincode.toString();
+        var regno = 9912;
+        if (data.pincode) {
+            data.pincode = data.pincode.toString();
+        }
         sails.query(function(err, db) {
             if (err) {
                 console.log(err);
@@ -53,7 +56,19 @@ module.exports = {
                             });
 
                             function saveuser() {
-                                db.collection('user').insert(data, function(err, created) {
+                                db.collection('user').aggregate([{
+                                    $group: {
+                                        _id: null,
+                                        regno: {
+                                            $max: "$regno"
+                                        }
+                                    }
+                                }, {
+                                    $project: {
+                                        _id: 0,
+                                        regno: 1
+                                    }
+                                }]).toArray(function(err, data2) {
                                     if (err) {
                                         console.log(err);
                                         callback({
@@ -61,20 +76,78 @@ module.exports = {
                                             comment: "Error"
                                         });
                                         db.close();
-                                    } else if (created) {
-                                        callback({
-                                            value: true,
-                                            id: data._id
-                                        });
-                                        db.close();
+                                    } else if (data2 && data2[0]) {
+                                        data.regno = data2[0].regno + 1;
+                                        callme();
                                     } else {
-                                        callback({
-                                            value: false,
-                                            comment: "Not created"
-                                        });
-                                        db.close();
+                                        data.regno = 9912;
+                                        callme();
                                     }
                                 });
+
+                                function callme() {
+                                    db.collection('user').insert(data, function(err, created) {
+                                        if (err) {
+                                            console.log(err);
+                                            callback({
+                                                value: false,
+                                                comment: "Error"
+                                            });
+                                            db.close();
+                                        } else if (created) {
+                                            data.regno = data.regno.toString();
+                                            if (data.regno.length == 4) {
+                                                var regnos = "R00" + data.regno;
+                                            } else if (data.regno.length == 5) {
+                                                var regnos = "R0" + data.regno;
+                                            } else {
+                                                var regnos = "R" + data.regno;
+                                            }
+                                            var template_name = "bherpo";
+                                            var template_content = [{
+                                                "name": "bherpo",
+                                                "content": "bherpo"
+                                            }]
+                                            var message = {
+                                                "from_email": sails.fromEmail,
+                                                "from_name": sails.fromName,
+                                                "to": [{
+                                                    "email": data.email,
+                                                    "type": "to"
+                                                }],
+                                                "global_merge_vars": [{
+                                                    "name": "events",
+                                                    "content": data.sportsdata
+                                                }, {
+                                                    "name": "number",
+                                                    "content": regnos
+                                                }, {
+                                                    "name": "team",
+                                                    "content": data.team.teamname
+                                                }]
+                                            };
+                                            sails.mandrill_client.messages.sendTemplate({
+                                                "template_name": template_name,
+                                                "template_content": template_content,
+                                                "message": message
+                                            }, function(result) {
+                                                callback({
+                                                    value: true,
+                                                    comment: "Mail Sent"
+                                                });
+                                                db.close();
+                                            }, function(e) {
+                                                console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+                                            });
+                                        } else {
+                                            callback({
+                                                value: false,
+                                                comment: "Not created"
+                                            });
+                                            db.close();
+                                        }
+                                    });
+                                }
                             }
                         }
                     });
