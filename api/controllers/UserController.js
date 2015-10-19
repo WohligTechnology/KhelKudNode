@@ -76,6 +76,12 @@ module.exports = {
         }
         User.countusers(req.body, print);
     },
+    countregno: function(req, res) {
+        var print = function(data) {
+            res.json(data);
+        }
+        User.countregno(req.body, print);
+    },
     findbyreg: function(req, res) {
         var print = function(data) {
             res.json(data);

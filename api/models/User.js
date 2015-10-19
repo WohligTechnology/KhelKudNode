@@ -488,6 +488,46 @@ module.exports = {
             }
         });
     },
+    countregno: function(data, callback) {
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: "false"
+                });
+            }
+            if (db) {
+                db.collection('user').aggregate([{
+                    $group: {
+                        _id: null,
+                        regno: {
+                            $max: "$regno"
+                        }
+                    }
+                }, {
+                    $project: {
+                        _id: 0,
+                        regno: 1
+                    }
+                }]).toArray(function(err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false,
+                            comment: "Error"
+                        });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        callback(data2[0].regno);
+                        db.close();
+                    } else {
+                        callback(9912);
+                        db.close();
+                    }
+                });
+            }
+        });
+    },
     findbyreg: function(data, callback) {
         sails.query(function(err, db) {
             if (err) {
