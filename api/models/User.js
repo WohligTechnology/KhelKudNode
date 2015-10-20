@@ -1,5 +1,9 @@
 module.exports = {
     save: function(data, callback) {
+        var village = "";
+        if (data.village && data.village[0] && data.village[0].name) {
+            village = data.village[0].name;
+        }
         var regno = 9913;
         if (data.pincode) {
             data.pincode = data.pincode.toString();
@@ -82,8 +86,12 @@ module.exports = {
                                     });
                                     db.close();
                                 } else if (created) {
+                                    var today = new Date();
+                                    var registrationdate = today.getDate() + "-" + today.getMonth() + "-" + today.getFullYear();
                                     data.regno = data.regno.toString();
                                     var name = data.firstname + " " + data.middlename + " " + data.lastname;
+                                    var date = data.dateofbirth.split("-");
+                                    data.dateofbirth = date[2] + "-" + date[1] + "-" + date[0];
                                     if (data.regno.length == 4) {
                                         var regnos = "R00" + data.regno;
                                     } else if (data.regno.length == 5) {
@@ -121,6 +129,33 @@ module.exports = {
                                         }, {
                                             "name": "name",
                                             "content": name
+                                        }, {
+                                            "name": "regdate",
+                                            "content": registrationdate
+                                        }, {
+                                            "name": "dob",
+                                            "content": data.dateofbirth
+                                        }, {
+                                            "name": "email",
+                                            "content": data.email
+                                        }, {
+                                            "name": "gen",
+                                            "content": data.gender
+                                        }, {
+                                            "name": "pin",
+                                            "content": data.pincode
+                                        }, {
+                                            "name": "area",
+                                            "content": data.area
+                                        }, {
+                                            "name": "city",
+                                            "content": data.city
+                                        }, {
+                                            "name": "vill",
+                                            "content": village
+                                        }, {
+                                            "name": "add",
+                                            "content": data.address
                                         }]
                                     };
                                     sails.mandrill_client.messages.sendTemplate({
