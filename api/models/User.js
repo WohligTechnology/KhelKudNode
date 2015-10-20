@@ -4,9 +4,6 @@ module.exports = {
         if (data.pincode) {
             data.pincode = data.pincode.toString();
         }
-        if (data.area && data.area[0]) {
-            data.area = data.area[0].name;
-        }
         sails.query(function(err, db) {
             if (err) {
                 console.log(err);
