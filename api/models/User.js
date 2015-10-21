@@ -87,7 +87,8 @@ module.exports = {
                                     db.close();
                                 } else if (created) {
                                     var today = new Date();
-                                    var registrationdate = today.getDate() + "-" + today.getMonth() + "-" + today.getFullYear();
+                                    var month = parseInt(today.getMonth()+1);
+                                    var registrationdate = today.getDate() + "-" + month + "-" + today.getFullYear();
                                     data.regno = data.regno.toString();
                                     var name = data.firstname + " " + data.middlename + " " + data.lastname;
                                     var date = data.dateofbirth.split("-");
