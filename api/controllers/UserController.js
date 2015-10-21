@@ -380,7 +380,7 @@ module.exports = {
                     $unwind: "$sports"
                 }, {
                     $project: {
-                        _id: 1,
+                        _id: 0,
                         regno: 1,
                         name: {
                             $concat: ["$fname", " ", "$mname", " ", "$lname"]
