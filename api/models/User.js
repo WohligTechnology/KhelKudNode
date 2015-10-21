@@ -557,7 +557,7 @@ module.exports = {
             }
             if (db) {
                 db.collection("user").find({
-                    regno: m.regno
+                    regno: data.regno
                 }).toArray(function(err, data2) {
                     if (err) {
                         console.log(err);
