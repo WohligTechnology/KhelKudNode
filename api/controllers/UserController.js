@@ -355,10 +355,10 @@ module.exports = {
                     $unwind: "$registrationdate"
                 }, {
                     $project: {
-                        _id: 0,
+                        _id: 1,
                         regno: 1,
                         name: {
-                            $concat: ["$fname", "$mname", "$lname"]
+                            $concat: ["$fname", " ", "$mname", " ", "$lname"]
                         },
                         teamname: 1,
                         mobileno: 1,
