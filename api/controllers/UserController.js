@@ -422,10 +422,10 @@ module.exports = {
                                         }
                                     });
                                 }
-                                i++;
-                                if (i == data2.length) {
-                                    createExcel(data2);
-                                }
+                            }
+                            i++;
+                            if (i == data2.length) {
+                                createExcel(data2);
                             }
                         });
 
