@@ -261,5 +261,180 @@ module.exports = {
                 });
             }
         });
+    },
+    jsonToExcel: function(req, res) {
+        var i = 0;
+        var team = req.param('team');
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                res.json({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("user").aggregate([{
+                    $match: {
+                        "team.teamname": team
+                    }
+                }, {
+                    $unwind: "$village"
+                }, {
+                    $group: {
+                        _id: "$_id",
+                        regno: {
+                            $addToSet: "$regno"
+                        },
+                        fname: {
+                            $addToSet: "$firstname"
+                        },
+                        mname: {
+                            $addToSet: "$middlename"
+                        },
+                        lname: {
+                            $addToSet: "$lastname"
+                        },
+                        teamname: {
+                            $addToSet: "$team.teamname"
+                        },
+                        mobileno: {
+                            $addToSet: "$mobileno"
+                        },
+                        area: {
+                            $addToSet: "$area"
+                        },
+                        gender: {
+                            $addToSet: "$gender"
+                        },
+                        dateofbirth: {
+                            $addToSet: "$dateofbirth"
+                        },
+                        email: {
+                            $addToSet: "$email"
+                        },
+                        address: {
+                            $addToSet: "$address"
+                        },
+                        pincode: {
+                            $addToSet: "$pincode"
+                        },
+                        city: {
+                            $addToSet: "$city"
+                        },
+                        registrationdate: {
+                            $addToSet: "$registrationdate"
+                        }
+                    }
+                }, {
+                    $unwind: "$regno"
+                }, {
+                    $unwind: "$fname"
+                }, {
+                    $unwind: "$mname"
+                }, {
+                    $unwind: "$lname"
+                }, {
+                    $unwind: "$teamname"
+                }, {
+                    $unwind: "$mobileno"
+                }, {
+                    $unwind: "$area"
+                }, {
+                    $unwind: "$gender"
+                }, {
+                    $unwind: "$dateofbirth"
+                }, {
+                    $unwind: "$email"
+                }, {
+                    $unwind: "$address"
+                }, {
+                    $unwind: "$pincode"
+                }, {
+                    $unwind: "$city"
+                }, {
+                    $unwind: "$registrationdate"
+                }, {
+                    $project: {
+                        _id: 0,
+                        regno: 1,
+                        name: {
+                            $concat: ["$fname", "$mname", "$lname"]
+                        },
+                        teamname: 1,
+                        mobileno: 1,
+                        area: 1,
+                        gender: 1,
+                        dateofbirth: 1,
+                        email: 1,
+                        address: 1,
+                        pincode: 1,
+                        city: 1,
+                        registrationdate: 1,
+                        sportsdata: 1,
+                        sports: 1,
+                        quiz: 1,
+                        aquatics: 1,
+                        dance: 1,
+                        volunteer: 1
+                    }
+                }]).toArray(function(err, data2) {
+                    if (err) {
+                        res.json({
+                            value: false
+                        });
+                    } else if (data2 && data2[0]) {
+                        _.each(data2, function(n) {
+                            if (n.sportsdata && n.sportsdata != "") {
+                                n.sports = n.sportsdata;
+                            } else {
+                                if (n.sports[0]) {
+                                    _.each(n.sports, function(m) {
+                                        n.sports += m;
+                                    });
+                                }
+                                if (volunteer[0]) {
+                                    _.each(n.volunteer, function(m) {
+                                        n.sports += m;
+                                    });
+                                }
+                                if (dance[0]) {
+                                    _.each(n.dance, function(m) {
+                                        n.sports += m;
+                                    });
+                                }
+                                if (aquatics[0]) {
+                                    _.each(n.aquatics, function(m) {
+                                        n.sports += m;
+                                    });
+                                }
+                                if (n.quiz[0]) {
+                                    _.each(n.quiz, function(m) {
+                                        n.sports += m;
+                                    });
+                                }
+                                i++;
+                                if (i == data2.length) {
+                                    createExcel(data2);
+                                }
+                            }
+                        });
+
+                        function createExcel(json) {
+                            var xls = sails.json2xls(json);
+                            sails.fs.writeFileSync('./data.xlsx', xls, 'binary');
+                            var excel = sails.fs.readFileSync('./data.xlsx');
+                            var mimetype = sails.mime.lookup('./data.xlsx');
+                            res.set('Content-Type', mimetype);
+                            res.send(excel);
+                        }
+                    } else {
+                        res.json({
+                            value: false,
+                            comment: "No data found"
+                        });
+                    }
+                });
+            }
+        });
     }
 };
