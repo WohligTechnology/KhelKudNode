@@ -26,6 +26,7 @@ module.exports.bootstrap = function(cb) {
         sails.moment = require('moment'),
         sails.fs = require('fs'),
         sails._ = require('lodash'),
+        sails.json2xls = require('json2xls'),
         sails.mandrill = require('mandrill-api/mandrill'),
         sails.mandrill_client = new sails.mandrill.Mandrill('d_SuKWoJdHvaoeMf_892Nw'),
         sails.fromName = "Bherpo",
