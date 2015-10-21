@@ -387,29 +387,39 @@ module.exports = {
                             if (n.sportsdata && n.sportsdata != "") {
                                 n.sports = n.sportsdata;
                             } else {
-                                if (n.sports[0]) {
+                                if (n.sports && n.sports[0]) {
                                     _.each(n.sports, function(m) {
-                                        n.sports += m;
+                                        if (m != null) {
+                                            n.sports += m;
+                                        }
                                     });
                                 }
-                                if (volunteer[0]) {
+                                if (n.volunteer && volunteer[0]) {
                                     _.each(n.volunteer, function(m) {
-                                        n.sports += m;
+                                        if (m != null) {
+                                            n.sports += m;
+                                        }
                                     });
                                 }
-                                if (dance[0]) {
+                                if (n.dance && n.dance[0]) {
                                     _.each(n.dance, function(m) {
-                                        n.sports += m;
+                                        if (m != null) {
+                                            n.sports += m;
+                                        }
                                     });
                                 }
-                                if (aquatics[0]) {
+                                if (n.aquatics && n.aquatics[0]) {
                                     _.each(n.aquatics, function(m) {
-                                        n.sports += m;
+                                        if (m != null) {
+                                            n.sports += m;
+                                        }
                                     });
                                 }
-                                if (n.quiz[0]) {
+                                if (n.quiz && n.quiz[0]) {
                                     _.each(n.quiz, function(m) {
-                                        n.sports += m;
+                                        if (m != null) {
+                                            n.sports += m;
+                                        }
                                     });
                                 }
                                 i++;
