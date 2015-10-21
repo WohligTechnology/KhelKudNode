@@ -323,6 +323,21 @@ module.exports = {
                         },
                         registrationdate: {
                             $addToSet: "$registrationdate"
+                        },
+                        sports: {
+                            $addToSet: "$sports"
+                        },
+                        quiz: {
+                            $addToSet: "$quiz"
+                        },
+                        dance: {
+                            $addToSet: "$dance"
+                        },
+                        aquatics: {
+                            $addToSet: "$aquatics"
+                        },
+                        volunteer: {
+                            $addToSet: "$volunteer"
                         }
                     }
                 }, {
@@ -354,6 +369,16 @@ module.exports = {
                 }, {
                     $unwind: "$registrationdate"
                 }, {
+                    $unwind: "$dance"
+                }, {
+                    $unwind: "$aquatics"
+                }, {
+                    $unwind: "$volunteer"
+                }, {
+                    $unwind: "$quiz"
+                }, {
+                    $unwind: "$sports"
+                }, {
                     $project: {
                         _id: 1,
                         regno: 1,
@@ -370,7 +395,6 @@ module.exports = {
                         pincode: 1,
                         city: 1,
                         registrationdate: 1,
-                        sportsdata: 1,
                         sports: 1,
                         quiz: 1,
                         aquatics: 1,
@@ -384,44 +408,41 @@ module.exports = {
                         });
                     } else if (data2 && data2[0]) {
                         _.each(data2, function(n) {
-                            if (n.sportsdata && n.sportsdata != "") {
-                                n.sports = n.sportsdata;
-                            } else {
-                                if (n.sports && n.sports[0]) {
-                                    _.each(n.sports, function(m) {
-                                        if (m != null) {
-                                            n.sports += m;
-                                        }
-                                    });
-                                }
-                                if (n.volunteer && volunteer[0]) {
-                                    _.each(n.volunteer, function(m) {
-                                        if (m != null) {
-                                            n.sports += m;
-                                        }
-                                    });
-                                }
-                                if (n.dance && n.dance[0]) {
-                                    _.each(n.dance, function(m) {
-                                        if (m != null) {
-                                            n.sports += m;
-                                        }
-                                    });
-                                }
-                                if (n.aquatics && n.aquatics[0]) {
-                                    _.each(n.aquatics, function(m) {
-                                        if (m != null) {
-                                            n.sports += m;
-                                        }
-                                    });
-                                }
-                                if (n.quiz && n.quiz[0]) {
-                                    _.each(n.quiz, function(m) {
-                                        if (m != null) {
-                                            n.sports += m;
-                                        }
-                                    });
-                                }
+                            n.sport = "";
+                            if (n.sports.length > 0) {
+                                _.each(n.sports, function(m) {
+                                    if (m != null) {
+                                        n.sport += m + ",";
+                                    }
+                                });
+                            }
+                            if (n.volunteer.length > 0) {
+                                _.each(n.volunteer, function(m) {
+                                    if (m != null) {
+                                        n.sport += m + ",";
+                                    }
+                                });
+                            }
+                            if (n.dance.length > 0) {
+                                _.each(n.dance, function(m) {
+                                    if (m != null) {
+                                        n.sport += m + ",";
+                                    }
+                                });
+                            }
+                            if (n.aquatics.length > 0) {
+                                _.each(n.aquatics, function(m) {
+                                    if (m != null) {
+                                        n.sport += m + ",";
+                                    }
+                                });
+                            }
+                            if (n.quiz.length > 0) {
+                                _.each(n.quiz, function(m) {
+                                    if (m != null) {
+                                        n.sport += m + ",";
+                                    }
+                                });
                             }
                             i++;
                             if (i == data2.length) {
