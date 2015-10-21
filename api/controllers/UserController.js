@@ -467,5 +467,38 @@ module.exports = {
                 });
             }
         });
+    },
+    countteam: function(req, res) {
+        var team = req.param('team');
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                res.json({
+                    value: "false"
+                });
+            }
+            if (db) {
+                db.collection("user").count({
+                    "team.teamname": team
+                }, function(err, number) {
+                    if (number != null) {
+                        res.json(number);
+                        db.close();
+                    } else if (err) {
+                        res.json({
+                            value: "false",
+                            comment: "Error"
+                        });
+                        db.close();
+                    } else {
+                        res.json({
+                            value: "false",
+                            comment: "No data found"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
     }
 };
