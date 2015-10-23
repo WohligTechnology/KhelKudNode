@@ -1,25 +1,25 @@
 module.exports = {
-    save: function(req, res) {
-        if (req.body._id) {
-            if (req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
-                user();
-            } else {
-                res.json({
-                    value: "false",
-                    comment: "User-id is incorrect"
-                });
-            }
-        } else {
-            user();
-        }
+    // save: function(req, res) {
+    //     if (req.body._id) {
+    //         if (req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+    //             user();
+    //         } else {
+    //             res.json({
+    //                 value: "false",
+    //                 comment: "User-id is incorrect"
+    //             });
+    //         }
+    //     } else {
+    //         user();
+    //     }
 
-        function user() {
-            var print = function(data) {
-                res.json(data);
-            }
-            User.save(req.body, print);
-        }
-    },
+    //     function user() {
+    //         var print = function(data) {
+    //             res.json(data);
+    //         }
+    //         User.save(req.body, print);
+    //     }
+    // },
     delete: function(req, res) {
         if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
             var print = function(data) {
