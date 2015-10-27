@@ -471,5 +471,60 @@ module.exports = {
                 });
             }
         });
+    },
+    teamcount: function(data, callback) {
+        var i = 0;
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false,
+                    comment: "Error"
+                });
+            }
+            if (db) {
+                Team.find(data, function(teamrespo) {
+                    _.each(teamrespo, function(n) {
+                        db.collection('loginuser').find({
+                            team: sails.ObjectID(n._id)
+                        }).toArray(function(err, data2) {
+                            if (err) {
+                                console.log(err);
+                                callback({
+                                    value: false,
+                                    comment: "Error"
+                                });
+                            } else if (data2 && data2[0]) {
+                                var newdata = {};
+                                newdata._id = n._id;
+                                newdata.downloads = data2.length;
+                                Team.save(newdata, function(logrespo) {
+                                    i++;
+                                    if (i == teamrespo.length) {
+                                        callback({
+                                            value: true,
+                                            comment: "Done"
+                                        });
+                                    }
+                                });
+                            } else {
+                                var newdata = {};
+                                newdata._id = n._id;
+                                newdata.downloads = 0;
+                                Team.save(newdata, function(logrespo) {
+                                    i++;
+                                    if (i == teamrespo.length) {
+                                        callback({
+                                            value: true,
+                                            comment: "Done"
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    });
+                });
+            }
+        });
     }
 };

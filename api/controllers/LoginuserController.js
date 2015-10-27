@@ -52,6 +52,12 @@ module.exports = {
         };
         Loginuser.adminlogin(req.body, callback);
     },
+    teamcount: function(req, res) {
+        function callback(data) {
+            res.json(data);
+        };
+        Loginuser.teamcount(req.body, callback);
+    },
     findone: function(req, res) {
         if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
             var print = function(data) {
