@@ -73,7 +73,14 @@ module.exports = {
                                 value: true,
                                 id: data._id
                             });
-                            db.close();
+                            if (data.team) {
+                                var newdata = {};
+                                newdata._id = data.team;
+                                Team.findone(newdata, function(findrespo) {
+                                    newdata.downloads = findrespo.downloads + 1;
+                                    Team.save(newdata, callback);
+                                });
+                            }
                         } else {
                             callback({
                                 value: false,
