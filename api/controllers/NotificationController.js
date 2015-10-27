@@ -63,5 +63,29 @@ module.exports = {
             res.json(data);
         };
         Notification.findlimited(req.body, callback);
+    },
+    editnot: function(req, res) {
+        if (req.body._id) {
+            if (req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+                notification();
+            } else {
+                res.json({
+                    value: "false",
+                    comment: "Notification-id is incorrect"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                comment: "Please provide parameters"
+            });
+        }
+
+        function notification() {
+            var print = function(data) {
+                res.json(data);
+            }
+            Notification.editnot(req.body, print);
+        }
     }
 };

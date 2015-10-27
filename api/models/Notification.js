@@ -371,5 +371,44 @@ module.exports = {
                 }
             });
         });
+    },
+    editnot: function(data, callback) {
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            } else {
+                var notification = sails.ObjectID(data._id);
+                delete data._id
+                db.collection('notification').update({
+                    _id: notification
+                }, {
+                    $set: data
+                }, function(err, updated) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false,
+                            comment: "Error"
+                        });
+                        db.close();
+                    } else if (updated) {
+                        callback({
+                            value: true,
+                            comment: "Data updated"
+                        });
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No data found"
+                        });
+                        db.close();
+                    }
+                });
+            }
+        });
     }
 };
