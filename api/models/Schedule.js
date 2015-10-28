@@ -8,26 +8,20 @@ module.exports = {
                 });
             }
             if (db) {
-                var sports = sails.ObjectID(data.sports);
-                delete data.sports;
                 if (!data._id) {
                     data._id = sails.ObjectID();
-                    db.collection("sports").update({
-                        _id: sports
-                    }, {
-                        $push: {
-                            schedule: data
-                        }
-                    }, function(err, updated) {
+                    db.collection('schedule').insert(data, function(err, created) {
                         if (err) {
                             console.log(err);
                             callback({
-                                value: false
+                                value: false,
+                                comment: "Error"
                             });
                             db.close();
-                        } else if (updated) {
+                        } else if (created) {
                             callback({
-                                value: true
+                                value: true,
+                                id: data._id
                             });
                             db.close();
                         } else {
@@ -39,22 +33,18 @@ module.exports = {
                         }
                     });
                 } else {
-                    data._id = sails.ObjectID(data._id);
-                    var tobechanged = {};
-                    var attribute = "schedule.$.";
-                    _.forIn(data, function(value, key) {
-                        tobechanged[attribute + key] = value;
-                    });
-                    db.collection("sports").update({
-                        "_id": sports,
-                        "schedule._id": data._id
+                    var schedule = sails.ObjectID(data._id);
+                    delete data._id
+                    db.collection('schedule').update({
+                        _id: schedule
                     }, {
-                        $set: tobechanged
+                        $set: data
                     }, function(err, updated) {
                         if (err) {
                             console.log(err);
                             callback({
-                                value: false
+                                value: false,
+                                comment: "Error"
                             });
                             db.close();
                         } else if (updated.result.nModified != 0 && updated.result.n != 0) {
@@ -80,10 +70,7 @@ module.exports = {
             }
         });
     },
-    delete: function(data, callback) {
-        var sports = sails.ObjectID(data.sports);
-        delete data.sports;
-        data._id = sails.ObjectID(data._id);
+    find: function(data, callback) {
         sails.query(function(err, db) {
             if (err) {
                 console.log(err);
@@ -92,25 +79,14 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("sports").update({
-                    _id: sports
-                }, {
-                    $pull: {
-                        "schedule": {
-                            "_id": sails.ObjectID(data._id)
-                        }
-                    }
-                }, function(err, updated) {
+                db.collection("schedule").find().toArray(function(err, found) {
                     if (err) {
-                        console.log(err);
                         callback({
                             value: false
                         });
                         db.close();
-                    } else if (updated) {
-                        callback({
-                            value: true
-                        });
+                    } else if (found && found[0]) {
+                        callback(found);
                         db.close();
                     } else {
                         callback({
@@ -125,6 +101,11 @@ module.exports = {
     },
     //Findlimited
     findlimited: function(data, callback) {
+        var newreturns = {};
+        newreturns.data = [];
+        var check = new RegExp(data.search, "i");
+        var pagesize = parseInt(data.pagesize);
+        var pagenumber = parseInt(data.pagenumber);
         sails.query(function(err, db) {
             if (err) {
                 console.log(err);
@@ -133,52 +114,17 @@ module.exports = {
                 });
             }
             if (db) {
-                var newcallback = 0;
-                var newreturns = {};
-                var check = new RegExp(data.search, "i");
-                var pagesize = data.pagesize;
-                var pagenumber = data.pagenumber;
-                var sports = sails.ObjectID(data.sports);
                 callbackfunc1();
 
                 function callbackfunc1() {
-                    db.collection("sports").aggregate([{
-                        $match: {
-                            _id: sports,
-                            "schedule.team1": {
-                                $exists: true
-                            },
-                            "schedule.team1": {
-                                $regex: check
-                            }
+                    db.collection("schedule").count({
+                        event: {
+                            '$regex': check
                         }
-                    }, {
-                        $unwind: "$schedule"
-                    }, {
-                        $match: {
-                            _id: sports,
-                            "schedule.team1": {
-                                $exists: true
-                            },
-                            "schedule.team1": {
-                                $regex: check
-                            }
-                        }
-                    }, {
-                        $group: {
-                            _id: sports,
-                            count: {
-                                $sum: 1
-                            }
-                        }
-                    }, {
-                        $project: {
-                            count: 1
-                        }
-                    }]).toArray(function(err, result) {
-                        if (result && result[0]) {
-                            newreturns.total = result[0].count;
-                            newreturns.totalpages = Math.ceil(result[0].count / data.pagesize);
+                    }, function(err, number) {
+                        if (number && number != "") {
+                            newreturns.total = number;
+                            newreturns.totalpages = Math.ceil(number / data.pagesize);
                             callbackfunc();
                         } else if (err) {
                             console.log(err);
@@ -196,42 +142,20 @@ module.exports = {
                     });
 
                     function callbackfunc() {
-                        db.collection("sports").aggregate([{
-                            $match: {
-                                _id: sports,
-                                "schedule.team1": {
-                                    $exists: true
-                                },
-                                "schedule.team1": {
-                                    $regex: check
-                                }
+                        db.collection("schedule").find({
+                            event: {
+                                '$regex': check
                             }
-                        }, {
-                            $unwind: "$schedule"
-                        }, {
-                            $match: {
-                                _id: sports,
-                                "schedule.team1": {
-                                    $exists: true
-                                },
-                                "schedule.team1": {
-                                    $regex: check
-                                }
-                            }
-                        }, {
-                            $project: {
-                                schedule: 1
-                            }
-                        }]).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
-                            if (found && found[0]) {
-                                newreturns.data = found;
-                                callback(newreturns);
-                                db.close();
-                            } else if (err) {
-                                console.log(err);
+                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
+                            if (err) {
                                 callback({
                                     value: false
                                 });
+                                console.log(err);
+                                db.close();
+                            } else if (found && found[0]) {
+                                newreturns.data = found;
+                                callback(newreturns);
                                 db.close();
                             } else {
                                 callback({
@@ -248,7 +172,6 @@ module.exports = {
     },
     //Findlimited
     findone: function(data, callback) {
-        var sports = sails.ObjectID(data.sports);
         sails.query(function(err, db) {
             if (err) {
                 console.log(err);
@@ -257,20 +180,18 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("sports").find({
-                    _id: sports,
-                    "schedule._id": sails.ObjectID(data._id)
-                }, {
-                    "schedule.$": 1
+                db.collection("schedule").find({
+                    _id: sails.ObjectID(data._id)
                 }).toArray(function(err, data2) {
-                    if (data2 && data2[0] && data2[0].schedule && data2[0].schedule[0]) {
-                        callback(data2[0].schedule[0]);
-                        db.close();
-                    } else if (err) {
+                    if (err) {
                         console.log(err);
                         callback({
                             value: false
                         });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        delete data2[0].password;
+                        callback(data2[0]);
                         db.close();
                     } else {
                         callback({
@@ -283,8 +204,7 @@ module.exports = {
             }
         });
     },
-    find: function(data, callback) {
-        var sports = sails.ObjectID(data.sports);
+    delete: function(data, callback) {
         sails.query(function(err, db) {
             if (err) {
                 console.log(err);
@@ -292,45 +212,28 @@ module.exports = {
                     value: false
                 });
             }
-            if (db) {
-                db.collection("sports").aggregate([{
-                    $match: {
-                        _id: sports,
-                        "schedule.team1": {
-                            $exists: true
-                        }
-                    }
-                }, {
-                    $unwind: "$schedule"
-                }, {
-                    $match: {
-                        "schedule.team1": {
-                            $exists: true
-                        }
-                    }
-                }, {
-                    $project: {
-                        schedule: 1
-                    }
-                }]).toArray(function(err, data2) {
-                    if (data2 && data2[0] && data2[0].schedule && data2[0].schedule[0]) {
-                        callback(data2);
-                        db.close();
-                    } else if (err) {
-                        console.log(err);
-                        callback({
-                            value: false
-                        });
-                        db.close();
-                    } else {
-                        callback({
-                            value: false,
-                            comment: "No data found"
-                        });
-                        db.close();
-                    }
-                });
-            }
+            db.collection('schedule').remove({
+                _id: sails.ObjectID(data._id)
+            }, function(err, deleted) {
+                if (deleted) {
+                    callback({
+                        value: true
+                    });
+                    db.close();
+                } else if (err) {
+                    console.log(err);
+                    callback({
+                        value: false
+                    });
+                    db.close();
+                } else {
+                    callback({
+                        value: false,
+                        comment: "No data found"
+                    });
+                    db.close();
+                }
+            });
         });
     }
 };
