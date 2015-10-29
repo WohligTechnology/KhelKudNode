@@ -118,7 +118,7 @@ module.exports = {
 
                 function callbackfunc1() {
                     db.collection("schedule").count({
-                        event: {
+                        venue: {
                             '$regex': check
                         }
                     }, function(err, number) {
@@ -143,7 +143,7 @@ module.exports = {
 
                     function callbackfunc() {
                         db.collection("schedule").find({
-                            event: {
+                            venue: {
                                 '$regex': check
                             }
                         }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
