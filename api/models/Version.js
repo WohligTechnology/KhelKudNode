@@ -10,7 +10,7 @@ module.exports = {
             if (db) {
                 if (!data._id) {
                     data._id = sails.ObjectID();
-                    db.collection('sports').insert(data, function(err, created) {
+                    db.collection('version').insert(data, function(err, created) {
                         if (err) {
                             console.log(err);
                             callback({
@@ -33,10 +33,10 @@ module.exports = {
                         }
                     });
                 } else {
-                    var sports = sails.ObjectID(data._id);
+                    var version = sails.ObjectID(data._id);
                     delete data._id
-                    db.collection('sports').update({
-                        _id: sports
+                    db.collection('version').update({
+                        _id: version
                     }, {
                         $set: data
                     }, function(err, updated) {
@@ -79,7 +79,7 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("sports").find().toArray(function(err, found) {
+                db.collection("version").find().toArray(function(err, found) {
                     if (err) {
                         callback({
                             value: false
@@ -117,7 +117,7 @@ module.exports = {
                 callbackfunc1();
 
                 function callbackfunc1() {
-                    db.collection("sports").count({
+                    db.collection("version").count({
                         name: {
                             '$regex': check
                         }
@@ -142,7 +142,7 @@ module.exports = {
                     });
 
                     function callbackfunc() {
-                        db.collection("sports").find({
+                        db.collection("version").find({
                             name: {
                                 '$regex': check
                             }
@@ -180,7 +180,7 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("sports").find({
+                db.collection("version").find({
                     _id: sails.ObjectID(data._id)
                 }).toArray(function(err, data2) {
                     if (err) {
@@ -212,7 +212,7 @@ module.exports = {
                     value: false
                 });
             }
-            db.collection('sports').remove({
+            db.collection('version').remove({
                 _id: sails.ObjectID(data._id)
             }, function(err, deleted) {
                 if (deleted) {

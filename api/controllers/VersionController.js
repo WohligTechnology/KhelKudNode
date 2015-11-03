@@ -2,22 +2,22 @@ module.exports = {
     save: function(req, res) {
         if (req.body._id) {
             if (req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
-                sports();
+                version();
             } else {
                 res.json({
                     value: "false",
-                    comment: "Sports-id is incorrect"
+                    comment: "Version-id is incorrect"
                 });
             }
         } else {
-            sports();
+            version();
         }
 
-        function sports() {
+        function version() {
             var print = function(data) {
                 res.json(data);
             }
-            Sports.save(req.body, print);
+            Version.save(req.body, print);
         }
     },
     delete: function(req, res) {
@@ -25,11 +25,11 @@ module.exports = {
             var print = function(data) {
                 res.json(data);
             }
-            Sports.delete(req.body, print);
+            Version.delete(req.body, print);
         } else {
             res.json({
                 value: "false",
-                comment: "Sports-id is incorrect"
+                comment: "Version-id is incorrect"
             });
         }
     },
@@ -37,18 +37,18 @@ module.exports = {
         function callback(data) {
             res.json(data);
         };
-        Sports.find(req.body, callback);
+        Version.find(req.body, callback);
     },
     findone: function(req, res) {
         if (req.body._id && req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
             var print = function(data) {
                 res.json(data);
             }
-            Sports.findone(req.body, print);
+            Version.findone(req.body, print);
         } else {
             res.json({
                 value: "false",
-                comment: "Sports-id is incorrect"
+                comment: "Version-id is incorrect"
             });
         }
     },
@@ -56,6 +56,6 @@ module.exports = {
         function callback(data) {
             res.json(data);
         };
-        Sports.findlimited(req.body, callback);
+        Version.findlimited(req.body, callback);
     }
 };
