@@ -79,7 +79,10 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("schedule").find().toArray(function(err, found) {
+                db.collection("schedule").sort({
+                    _id: 1,
+                    date: 1
+                }).find().toArray(function(err, found) {
                     if (err) {
                         callback({
                             value: false
