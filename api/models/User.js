@@ -716,7 +716,7 @@ module.exports = {
                     if (m.regno.length == 4) {
                         user.regno = "R00" + m.regno;
                         callme();
-                    } else if (user.regno.length == 5) {
+                    } else if (m.regno.length == 5) {
                         user.regno = "R0" + m.regno;
                         callme();
                     } else {
