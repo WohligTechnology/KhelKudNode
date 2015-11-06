@@ -4,13 +4,12 @@ module.exports = {
             if (err) return res.send(500, err);
             _.each(uploadedFiles, function(n) {
                 var oldpath = n.fd;
-                console.log(oldpath);
                 var source = sails.fs.createReadStream(n.fd);
                 n.fd = n.fd.split('\\').pop().split('/').pop();
-                var dest = sails.fs.createWriteStream('./bherpoimg/' + n.fd);
                 sails.lwip.open(oldpath, function(err, image) {
                     image.resize(800, 800, "lanczos", function(err, image) {
                         image.toBuffer('jpg', function(err, buffer) {
+                            var dest = sails.fs.createWriteStream('./bherpoimg/' + n.fd);
                             sails.fs.writeFileSync(dest, buffer);
                             sails.fs.unlink(oldpath, function(data) {});
                         });
