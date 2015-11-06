@@ -9,10 +9,11 @@ module.exports = {
                 sails.lwip.open(oldpath, function(err, image) {
                     image.resize(800, 800, "lanczos", function(err, image) {
                         image.toBuffer('jpg', function(err, buffer) {
+                            console.log(n.fd);
                             var dest = sails.fs.createWriteStream('./bherpoimg/' + n.fd);
-                            console.log(dest.path);
-                            sails.fs.writeFileSync(dest.path, buffer);
-                            sails.fs.unlink(oldpath, function(data) {});
+                            sails.fs.writeFile(dest.path, buffer, function(respo) {
+                                sails.fs.unlink(oldpath, function(data) {});
+                            });
                         });
                     });
                 });
