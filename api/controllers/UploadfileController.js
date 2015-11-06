@@ -11,16 +11,9 @@ module.exports = {
                     image.resize(800, 800, "lanczos", function(err, image) {
                         image.toBuffer('jpg', function(err, buffer) {
                             sails.fs.writeFileSync(dest, buffer);
+                            sails.fs.unlink(oldpath, function(data) {});
                         });
                     });
-                });
-                source.on('end', function() {
-                    sails.fs.unlink(oldpath, function(data) {
-                        console.log(data);
-                    });
-                });
-                source.on('error', function(err) {
-                    console.log(err);
                 });
             });
             return res.json({
