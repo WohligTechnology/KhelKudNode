@@ -13,7 +13,7 @@ module.exports = {
                     dimensions.height = image.height();
                     height = dimensions.height / dimensions.width * 800;
                     image.resize(800, height, "lanczos", function(err, image) {
-                        image.toBuffer('jpg', 50,function(err, buffer) {
+                        image.toBuffer('jpg', {quality:50},function(err, buffer) {
                             var dest = sails.fs.createWriteStream('./bherpoimg/' + n.fd);
                             sails.fs.writeFile(dest.path, buffer, function(respo) {
                                 sails.fs.unlink(oldpath, function(data) {});
