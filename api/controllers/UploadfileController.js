@@ -10,6 +10,7 @@ module.exports = {
                     image.resize(800, 800, "lanczos", function(err, image) {
                         image.toBuffer('jpg', function(err, buffer) {
                             var dest = sails.fs.createWriteStream('./bherpoimg/' + n.fd);
+                            console.log(dest);
                             sails.fs.writeFileSync(dest, buffer);
                             sails.fs.unlink(oldpath, function(data) {});
                         });
