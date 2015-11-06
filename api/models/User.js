@@ -68,7 +68,17 @@ module.exports = {
                                 });
                                 db.close();
                             } else if (data2 && data2[0]) {
-                                data.regno = data2[0].regno + 1;
+                                var regsplit = data2[0].regno.split("R");
+                                regsplit[1].regno = parseInt(regsplit[1].regno);
+                                data.regno = regsplit[1].regno + 1;
+                                data.regno = data.regno.toString();
+                                if (data.regno.length == 4) {
+                                    data.regno = "R00" + data.regno;
+                                } else if (data.regno.length == 5) {
+                                    data.regno = "R0" + data.regno;
+                                } else {
+                                    data.regno = "R" + data.regno;
+                                }
                                 callme();
                             } else {
                                 data.regno = 9913;
@@ -86,91 +96,94 @@ module.exports = {
                                     });
                                     db.close();
                                 } else if (created) {
-                                    var today = new Date();
-                                    var month = parseInt(today.getMonth()+1);
-                                    var registrationdate = today.getDate() + "-" + month + "-" + today.getFullYear();
-                                    data.regno = data.regno.toString();
-                                    var name = data.firstname + " " + data.middlename + " " + data.lastname;
-                                    var date = data.dateofbirth.split("-");
-                                    data.dateofbirth = date[2] + "-" + date[1] + "-" + date[0];
-                                    if (data.regno.length == 4) {
-                                        var regnos = "R00" + data.regno;
-                                    } else if (data.regno.length == 5) {
-                                        var regnos = "R0" + data.regno;
-                                    } else {
-                                        var regnos = "R" + data.regno;
-                                    }
-                                    var template_name = "bherpo";
-                                    var template_content = [{
-                                        "name": "bherpo",
-                                        "content": "bherpo"
-                                    }]
-                                    var message = {
-                                        "from_email": sails.fromEmail,
-                                        "from_name": sails.fromName,
-                                        "to": [{
-                                            "email": data.email,
-                                            "type": "to"
-                                        }, {
-                                            "email": data.team.email,
-                                            "type": "cc"
-                                        }],
-                                        "global_merge_vars": [{
-                                            "name": "events",
-                                            "content": data.sportsdata
-                                        }, {
-                                            "name": "number",
-                                            "content": regnos
-                                        }, {
-                                            "name": "team",
-                                            "content": data.team.teamname
-                                        }, {
-                                            "name": "mob",
-                                            "content": data.mobileno
-                                        }, {
-                                            "name": "name",
-                                            "content": name
-                                        }, {
-                                            "name": "regdate",
-                                            "content": registrationdate
-                                        }, {
-                                            "name": "dob",
-                                            "content": data.dateofbirth
-                                        }, {
-                                            "name": "email",
-                                            "content": data.email
-                                        }, {
-                                            "name": "gen",
-                                            "content": data.gender
-                                        }, {
-                                            "name": "pin",
-                                            "content": data.pincode
-                                        }, {
-                                            "name": "area",
-                                            "content": data.area
-                                        }, {
-                                            "name": "city",
-                                            "content": data.city
-                                        }, {
-                                            "name": "vill",
-                                            "content": village
-                                        }, {
-                                            "name": "add",
-                                            "content": data.address
-                                        }]
-                                    };
-                                    sails.mandrill_client.messages.sendTemplate({
-                                        "template_name": template_name,
-                                        "template_content": template_content,
-                                        "message": message
-                                    }, function(result) {
-                                        callback({
-                                            value: true,
-                                            comment: "Mail Sent"
-                                        });
-                                        db.close();
-                                    }, function(e) {
-                                        console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+                                    //         var today = new Date();
+                                    //         var month = parseInt(today.getMonth()+1);
+                                    //         var registrationdate = today.getDate() + "-" + month + "-" + today.getFullYear();
+                                    //         var name = data.firstname + " " + data.middlename + " " + data.lastname;
+                                    //         var date = data.dateofbirth.split("-");
+                                    //         data.dateofbirth = date[2] + "-" + date[1] + "-" + date[0];
+                                    //         if (data.regno.length == 4) {
+                                    //             var regnos = "R00" + data.regno;
+                                    //         } else if (data.regno.length == 5) {
+                                    //             var regnos = "R0" + data.regno;
+                                    //         } else {
+                                    //             var regnos = "R" + data.regno;
+                                    //         }
+                                    //         var template_name = "bherpo";
+                                    //         var template_content = [{
+                                    //             "name": "bherpo",
+                                    //             "content": "bherpo"
+                                    //         }]
+                                    //         var message = {
+                                    //             "from_email": sails.fromEmail,
+                                    //             "from_name": sails.fromName,
+                                    //             "to": [{
+                                    //                 "email": data.email,
+                                    //                 "type": "to"
+                                    //             }, {
+                                    //                 "email": data.team.email,
+                                    //                 "type": "cc"
+                                    //             }],
+                                    //             "global_merge_vars": [{
+                                    //                 "name": "events",
+                                    //                 "content": data.sportsdata
+                                    //             }, {
+                                    //                 "name": "number",
+                                    //                 "content": regnos
+                                    //             }, {
+                                    //                 "name": "team",
+                                    //                 "content": data.team.teamname
+                                    //             }, {
+                                    //                 "name": "mob",
+                                    //                 "content": data.mobileno
+                                    //             }, {
+                                    //                 "name": "name",
+                                    //                 "content": name
+                                    //             }, {
+                                    //                 "name": "regdate",
+                                    //                 "content": registrationdate
+                                    //             }, {
+                                    //                 "name": "dob",
+                                    //                 "content": data.dateofbirth
+                                    //             }, {
+                                    //                 "name": "email",
+                                    //                 "content": data.email
+                                    //             }, {
+                                    //                 "name": "gen",
+                                    //                 "content": data.gender
+                                    //             }, {
+                                    //                 "name": "pin",
+                                    //                 "content": data.pincode
+                                    //             }, {
+                                    //                 "name": "area",
+                                    //                 "content": data.area
+                                    //             }, {
+                                    //                 "name": "city",
+                                    //                 "content": data.city
+                                    //             }, {
+                                    //                 "name": "vill",
+                                    //                 "content": village
+                                    //             }, {
+                                    //                 "name": "add",
+                                    //                 "content": data.address
+                                    //             }]
+                                    //         };
+                                    //         sails.mandrill_client.messages.sendTemplate({
+                                    //             "template_name": template_name,
+                                    //             "template_content": template_content,
+                                    //             "message": message
+                                    //         }, function(result) {
+                                    //             callback({
+                                    //                 value: true,
+                                    //                 comment: "Mail Sent"
+                                    //             });
+                                    //             db.close();
+                                    //         }, function(e) {
+                                    //             console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+                                    //         });
+                                    callback({
+                                        value: true,
+                                        comment: "Mail Sent"
                                     });
                                 } else {
                                     callback({
@@ -276,7 +289,6 @@ module.exports = {
             }
         });
     },
-    //Findlimited
     findlimited: function(data, callback) {
         var newreturns = {};
         newreturns.data = [];
@@ -347,7 +359,6 @@ module.exports = {
             }
         });
     },
-    //Findlimited
     findone: function(data, callback) {
         sails.query(function(err, db) {
             if (err) {
@@ -702,6 +713,60 @@ module.exports = {
                     }
                 }
             }
+        });
+    },
+    editUser: function(data, callback) {
+        var i = 0;
+        var regIndex = "";
+        User.find(data, function(userrespo) {
+            _.each(userrespo, function(m) {
+                m.regno = m.regno.toString();
+                regIndex = m.regno.indexOf("R");
+                if (regIndex && regIndex == -1) {
+                    var user = {};
+                    if (m.regno.length == 4) {
+                        user.regno = "R00" + m.regno;
+                        callme();
+                    } else if (user.regno.length == 5) {
+                        user.regno = "R0" + m.regno;
+                        callme();
+                    } else {
+                        user.regno = "R" + m.regno;
+                        callme();
+                    }
+
+                    function callme() {
+                        db.collection('user').update({
+                            _id: sails.ObjectID(m._id)
+                        }, {
+                            $set: user
+                        }, function(err, updated) {
+                            if (err) {
+                                console.log(err);
+                                db.close();
+                            } else if (updated) {
+                                console.log("true");
+                                i++;
+                                if (i == userrespo.length) {
+                                    callcall();
+                                }
+                                db.close();
+                            } else {
+                                db.close();
+                            }
+                        });
+
+                        function callcall() {
+                            callback("Done");
+                        }
+                    }
+                } else {
+                    i++;
+                    if (i == userrespo.length) {
+                        callback("Done");
+                    }
+                }
+            });
         });
     }
 };

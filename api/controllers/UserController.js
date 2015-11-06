@@ -88,6 +88,12 @@ module.exports = {
         }
         User.findbyreg(req.body, print);
     },
+    editUser: function(req, res) {
+        var print = function(data) {
+            res.json(data);
+        }
+        User.editUser(req.body, print);
+    },
     downloadE: function(req, res) {
         var path = './assets/docs/Event_Rule.pdf';
         var image = sails.fs.readFileSync(path);

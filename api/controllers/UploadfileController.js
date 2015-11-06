@@ -7,7 +7,13 @@ module.exports = {
                 var source = sails.fs.createReadStream(n.fd);
                 n.fd = n.fd.split('\\').pop().split('/').pop();
                 var dest = sails.fs.createWriteStream('./bherpoimg/' + n.fd);
-                source.pipe(dest);
+                sails.lwip.open(oldpath, function(err, image) {
+                    image.resize(800, 800, "lanczos", function(err, image) {
+                        image.toBuffer('jpg', function(err, buffer) {
+                            sails.fs.writeFileSync(dest, buffer);
+                        });
+                    });
+                });
                 source.on('end', function() {
                     sails.fs.unlink(oldpath, function(data) {
                         console.log(data);
