@@ -4,6 +4,7 @@ module.exports = {
             if (err) return res.send(500, err);
             _.each(uploadedFiles, function(n) {
                 var oldpath = n.fd;
+                console.log(oldpath);
                 var source = sails.fs.createReadStream(n.fd);
                 n.fd = n.fd.split('\\').pop().split('/').pop();
                 var dest = sails.fs.createWriteStream('./bherpoimg/' + n.fd);
