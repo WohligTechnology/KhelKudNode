@@ -146,6 +146,8 @@ module.exports = {
                             name: {
                                 '$regex': check
                             }
+                        }).sort({
+                            name: 1
                         }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
                             if (err) {
                                 callback({
