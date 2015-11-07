@@ -116,6 +116,9 @@ module.exports = {
                                         }, {
                                             "email": data.team.email,
                                             "type": "cc"
+                                        }, {
+                                            "email": "bherpomain@gmail.com",
+                                            "type": "cc"
                                         }],
                                         "global_merge_vars": [{
                                             "name": "events",
