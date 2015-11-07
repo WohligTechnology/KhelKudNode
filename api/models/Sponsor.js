@@ -79,7 +79,9 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("sponsor").find().toArray(function(err, found) {
+                db.collection("sponsor").find().sort({
+                            name: 1
+                        }).toArray(function(err, found) {
                     if (err) {
                         callback({
                             value: false
