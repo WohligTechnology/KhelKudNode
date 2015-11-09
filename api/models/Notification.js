@@ -283,7 +283,9 @@ module.exports = {
                     });
 
                     function callbackfunc1() {
-                        db.collection("notification").find({}).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
+                        db.collection("notification").find({}).sort({
+                            _id: -1
+                        }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
                             if (err) {
                                 callback({
                                     value: false
