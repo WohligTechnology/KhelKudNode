@@ -741,5 +741,26 @@ module.exports = {
                 });
             }
         });
-    }
+    },
+    wellwisher: function(req, res) {
+        if (req.body._id) {
+            if (req.body._id != "" && sails.ObjectID.isValid(req.body._id)) {
+                user();
+            } else {
+                res.json({
+                    value: "false",
+                    comment: "User-id is incorrect"
+                });
+            }
+        } else {
+            user();
+        }
+
+        function user() {
+            var print = function(data) {
+                res.json(data);
+            }
+            User.wellwisher(req.body, print);
+        }
+    },
 };

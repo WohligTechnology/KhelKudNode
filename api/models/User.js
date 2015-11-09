@@ -770,5 +770,258 @@ module.exports = {
                 }
             });
         });
+    },
+    wellwisher: function(data, callback) {
+        var village = "";
+        if (data.village && data.village[0] && data.village[0].name) {
+            village = data.village[0].name;
+        }
+        var regno = 9913;
+        if (data.pincode) {
+            data.pincode = data.pincode.toString();
+        }
+        if (data.area[0].name) {
+            data.area = data.area[0].name;
+        }
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                if (!data._id) {
+                    data._id = sails.ObjectID();
+                    db.collection("team").find({
+                        "pincode.pincode": data.pincode
+                    }, {
+                        "_id": 1,
+                        "teamname": 1,
+                        "email": 1
+                    }).toArray(function(err, data2) {
+                        if (data2 && data2[0]) {
+                            data.team = data2[0];
+                            saveuser();
+                        } else if (err) {
+                            console.log(err);
+                            callback({
+                                value: false
+                            });
+                            db.close();
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "No such pincode"
+                            });
+                            db.close();
+                        }
+                    });
+
+                    function saveuser() {
+                        db.collection('user').aggregate([{
+                            $group: {
+                                _id: null,
+                                regno: {
+                                    $max: "$regno"
+                                }
+                            }
+                        }, {
+                            $project: {
+                                _id: 0,
+                                regno: 1
+                            }
+                        }]).toArray(function(err, data2) {
+                            if (err) {
+                                console.log(err);
+                                callback({
+                                    value: false,
+                                    comment: "Error"
+                                });
+                                db.close();
+                            } else if (data2 && data2[0]) {
+                                var regsplit = data2[0].regno.split("R");
+                                regsplit[1] = parseInt(regsplit[1]);
+                                data.regno = regsplit[1] + 1;
+                                data.regno = data.regno.toString();
+                                if (data.regno.length == 4) {
+                                    data.regno = "R00" + data.regno;
+                                } else if (data.regno.length == 5) {
+                                    data.regno = "R0" + data.regno;
+                                } else {
+                                    data.regno = "R" + data.regno;
+                                }
+                                callme();
+                            } else {
+                                data.regno = "R010801";
+                                callme();
+                            }
+                        });
+
+                        function callme() {
+                            db.collection('user').insert(data, function(err, created) {
+                                if (err) {
+                                    console.log(err);
+                                    callback({
+                                        value: false,
+                                        comment: "Error"
+                                    });
+                                    db.close();
+                                } else if (created) {
+                                    var today = new Date();
+                                    var month = parseInt(today.getMonth() + 1);
+                                    var registrationdate = today.getDate() + "-" + month + "-" + today.getFullYear();
+                                    var name = data.firstname + " " + data.middlename + " " + data.lastname;
+                                    var date = data.dateofbirth.split("-");
+                                    data.dateofbirth = date[2] + "-" + date[1] + "-" + date[0];
+                                    var template_name = "bherpo";
+                                    var template_content = [{
+                                        "name": "bherpo",
+                                        "content": "bherpo"
+                                    }]
+                                    var message = {
+                                        "from_email": sails.fromEmail,
+                                        "from_name": sails.fromName,
+                                        "to": [{
+                                            "email": data.email,
+                                            "type": "to"
+                                        }, {
+                                            "email": data.team.email,
+                                            "type": "cc"
+                                        }, {
+                                            "email": "bherpomain@gmail.com",
+                                            "type": "cc"
+                                        }],
+                                        "global_merge_vars": [{
+                                            "name": "events",
+                                            "content": "Well-Wisher"
+                                        }, {
+                                            "name": "number",
+                                            "content": data.regno
+                                        }, {
+                                            "name": "team",
+                                            "content": data.team.teamname
+                                        }, {
+                                            "name": "mob",
+                                            "content": data.mobileno
+                                        }, {
+                                            "name": "name",
+                                            "content": name
+                                        }, {
+                                            "name": "regdate",
+                                            "content": registrationdate
+                                        }, {
+                                            "name": "dob",
+                                            "content": data.dateofbirth
+                                        }, {
+                                            "name": "email",
+                                            "content": data.email
+                                        }, {
+                                            "name": "gen",
+                                            "content": data.gender
+                                        }, {
+                                            "name": "pin",
+                                            "content": data.pincode
+                                        }, {
+                                            "name": "area",
+                                            "content": data.area
+                                        }, {
+                                            "name": "city",
+                                            "content": data.city
+                                        }, {
+                                            "name": "vill",
+                                            "content": village
+                                        }, {
+                                            "name": "add",
+                                            "content": data.address
+                                        }]
+                                    };
+                                    sails.mandrill_client.messages.sendTemplate({
+                                        "template_name": template_name,
+                                        "template_content": template_content,
+                                        "message": message
+                                    }, function(result) {
+                                        callback({
+                                            value: true,
+                                            comment: "Mail Sent"
+                                        });
+                                        db.close();
+                                    }, function(e) {
+                                        console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+                                    });
+                                } else {
+                                    callback({
+                                        value: false,
+                                        comment: "Not created"
+                                    });
+                                    db.close();
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    var user = sails.ObjectID(data._id);
+                    delete data._id;
+                    db.collection("team").find({
+                        "pincode.pincode": data.pincode
+                    }, {
+                        "_id": 1,
+                        "teamname": 1,
+                        "email": 1
+                    }).toArray(function(err, data2) {
+                        if (data2 && data2[0]) {
+                            data.team = data2[0];
+                            edituser();
+                        } else if (err) {
+                            console.log(err);
+                            callback({
+                                value: false
+                            });
+                            db.close();
+                        } else {
+                            callback({
+                                value: false,
+                                comment: "No such pincode"
+                            });
+                            db.close();
+                        }
+                    });
+
+                    function edituser() {
+                        db.collection('user').update({
+                            _id: user
+                        }, {
+                            $set: data
+                        }, function(err, updated) {
+                            if (err) {
+                                console.log(err);
+                                callback({
+                                    value: false,
+                                    comment: "Error"
+                                });
+                                db.close();
+                            } else if (updated.result.nModified != 0 && updated.result.n != 0) {
+                                callback({
+                                    value: true
+                                });
+                                db.close();
+                            } else if (updated.result.nModified == 0 && updated.result.n != 0) {
+                                callback({
+                                    value: true,
+                                    comment: "Data already updated"
+                                });
+                                db.close();
+                            } else {
+                                callback({
+                                    value: false,
+                                    comment: "No data found"
+                                });
+                                db.close();
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 };
