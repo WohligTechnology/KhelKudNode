@@ -1,6 +1,10 @@
 module.exports = {
     uploadfile: function(req, res) {
-        req.file("file").upload(function(err, uploadedFiles) {
+        res.connection.setTimeout(20000000);
+        req.connection.setTimeout(20000000);
+        req.file("file").upload({
+            maxBytes: 100000000000000000000
+        }, function(err, uploadedFiles) {
             if (err) return res.send(500, err);
             _.each(uploadedFiles, function(n) {
                 var oldpath = n.fd;
@@ -13,7 +17,9 @@ module.exports = {
                     dimensions.height = image.height();
                     height = dimensions.height / dimensions.width * 800;
                     image.resize(800, height, "lanczos", function(err, image) {
-                        image.toBuffer('jpg', {quality:50},function(err, buffer) {
+                        image.toBuffer('jpg', {
+                            quality: 50
+                        }, function(err, buffer) {
                             var dest = sails.fs.createWriteStream('./bherpoimg/' + n.fd);
                             sails.fs.writeFile(dest.path, buffer, function(respo) {
                                 sails.fs.unlink(oldpath, function(data) {});
