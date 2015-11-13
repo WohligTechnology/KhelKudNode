@@ -775,6 +775,10 @@ module.exports = {
                 if (m.wellwisher) {
                     var user = {};
                     user.sports = m.wellwisher;
+                    user.volunteer = [];
+                    user.quiz = [];
+                    user.dance = [];
+                    user.aquatics = [];
                     sails.query(function(err, db) {
                         if (err) {
                             console.log(err);
