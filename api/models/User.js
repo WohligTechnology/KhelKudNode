@@ -1073,5 +1073,141 @@ module.exports = {
                 }
             }
         });
+    },
+    sendmail: function(data, callback) {
+        var i = 0;
+        User.find(data, function(userrespo) {
+            if (!userrespo.value) {
+                _.each(userrespo, function(z) {
+                    var sportsdata = "";
+                    var j = 0;
+                    var village = "";
+                    if (z.village && z.village[0] && z.village[0].name) {
+                        village = z.village[0].name;
+                    }
+                    var name = z.firstname + " " + z.middlename + " " + z.lastname;
+                    if (z.sports.length > 0) {
+                        _.each(z.sports, function(a) {
+                            if (a != null) {
+                                sportsdata += a + ",";
+                            }
+                        });
+                    }
+                    if (z.dance.length > 0) {
+                        _.each(z.dance, function(a) {
+                            if (a != null) {
+                                sportsdata += a + ",";
+                            }
+                        });
+                    }
+                    if (z.quiz.length > 0) {
+                        _.each(z.quiz, function(a) {
+                            if (a != null) {
+                                sportsdata += a + ",";
+                            }
+                        });
+                    }
+                    if (z.aquatics.length > 0) {
+                        _.each(z.aquatics, function(a) {
+                            if (a != null) {
+                                sportsdata += a + ",";
+                            }
+                        });
+                    }
+                    if (z.volunteer.length > 0) {
+                        _.each(z.volunteer, function(a) {
+                            if (a != null) {
+                                sportsdata += a + ",";
+                            }
+                        });
+                    }
+                    var template_name = "bherpo";
+                    var template_content = [{
+                        "name": "bherpo",
+                        "content": "bherpo"
+                    }]
+                    var message = {
+                        "from_email": sails.fromEmail,
+                        "from_name": sails.fromName,
+                        "to": [{
+                            "email": z.email,
+                            "type": "to"
+                        }],
+                        "global_merge_vars": [{
+                            "name": "events",
+                            "content": z.sportsdata
+                        }, {
+                            "name": "number",
+                            "content": z.regno
+                        }, {
+                            "name": "team",
+                            "content": z.team.teamname
+                        }, {
+                            "name": "mob",
+                            "content": z.mobileno
+                        }, {
+                            "name": "name",
+                            "content": name
+                        }, {
+                            "name": "regdate",
+                            "content": z.registrationdate
+                        }, {
+                            "name": "dob",
+                            "content": z.dateofbirth
+                        }, {
+                            "name": "email",
+                            "content": z.email
+                        }, {
+                            "name": "gen",
+                            "content": z.gender
+                        }, {
+                            "name": "pin",
+                            "content": z.pincode
+                        }, {
+                            "name": "area",
+                            "content": z.area
+                        }, {
+                            "name": "city",
+                            "content": z.city
+                        }, {
+                            "name": "vill",
+                            "content": village
+                        }, {
+                            "name": "add",
+                            "content": z.address
+                        }]
+                    };
+                    sails.mandrill_client.messages.sendTemplate({
+                            "template_name": template_name,
+                            "template_content": template_content,
+                            "message": message
+                        }, function(result) {
+                            i++;
+                            if (i == userrespo.length) {
+                                callback({
+                                    value: true,
+                                    comment: "Mail Sent"
+                                });
+                            }
+                        },
+                        function(e) {
+                            console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+                            i++;
+                            if (i == userrespo.length) {
+                                callback({
+                                    value: true,
+                                    comment: "Mail Sent"
+                                });
+                            }
+                        });
+
+                });
+            } else {
+                callback({
+                    value: false,
+                    comment: "Error"
+                });
+            }
+        });
     }
 };

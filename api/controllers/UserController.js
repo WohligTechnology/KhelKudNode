@@ -786,5 +786,13 @@ module.exports = {
             res.json(data);
         }
         User.editUser2(req.body, print);
+    },
+    sendmail: function(req, res) {
+        res.connection.setTimeout(20000000000000000000);
+        req.connection.setTimeout(20000000000000000000);
+        var print = function(data) {
+            res.json(data);
+        }
+        User.sendmail(req.body, print);
     }
 };
