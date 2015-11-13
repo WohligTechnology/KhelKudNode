@@ -53,10 +53,24 @@ module.exports = {
         }
     },
     findlimited: function(req, res) {
-        function callback(data) {
-            res.json(data);
-        };
-        User.findlimited(req.body, callback);
+        if (req.body) {
+            if (req.body.pagesize && req.body.pagesize != "" && req.body.pagenumber && req.body.pagenumber != "") {
+                function callback(data) {
+                    res.json(data);
+                };
+                User.findlimited(req.body, callback);
+            } else {
+                res.json({
+                    value: "false",
+                    comment: "Please provide parameters"
+                });
+            }
+        } else {
+            res.json({
+                value: "false",
+                comment: "Please provide parameters"
+            });
+        }
     },
     deletedata: function(req, res) {
         function callback(data) {
@@ -287,6 +301,8 @@ module.exports = {
     jsonToExcel: function(req, res) {
         var i = 0;
         var team = req.param('team');
+        res.connection.setTimeout(20000000);
+        req.connection.setTimeout(20000000);
         sails.query(function(err, db) {
             if (err) {
                 console.log(err);
@@ -501,6 +517,8 @@ module.exports = {
     },
     userData: function(req, res) {
         var i = 0;
+        res.connection.setTimeout(20000000);
+        req.connection.setTimeout(20000000);
         sails.query(function(err, db) {
             if (err) {
                 console.log(err);
@@ -763,4 +781,10 @@ module.exports = {
             User.wellwisher(req.body, print);
         }
     },
+    editUser2: function(req, res) {
+        var print = function(data) {
+            res.json(data);
+        }
+        User.editUser2(req.body, print);
+    }
 };

@@ -768,6 +768,55 @@ module.exports = {
             });
         });
     },
+    editUser2: function(data, callback) {
+        var i = 0;
+        User.find(data, function(userrespo) {
+            _.each(userrespo, function(m) {
+                if (m.wellwisher) {
+                    var user = {};
+                    user.sports = m.wellwisher;
+                    sails.query(function(err, db) {
+                        if (err) {
+                            console.log(err);
+                            callback({
+                                value: false
+                            });
+                        }
+                        if (db) {
+                            db.collection('user').update({
+                                _id: sails.ObjectID(m._id)
+                            }, {
+                                $set: user
+                            }, function(err, updated) {
+                                if (err) {
+                                    console.log(err);
+                                    db.close();
+                                } else if (updated) {
+                                    user = {};
+                                    i++;
+                                    if (i == userrespo.length) {
+                                        callcall();
+                                    }
+                                    db.close();
+                                } else {
+                                    db.close();
+                                }
+                            });
+                        }
+                    });
+
+                    function callcall() {
+                        callback("Done");
+                    }
+                } else {
+                    i++;
+                    if (i == userrespo.length) {
+                        callback("Done");
+                    }
+                }
+            });
+        });
+    },
     wellwisher: function(data, callback) {
         var village = "";
         if (data.village && data.village[0] && data.village[0].name) {
