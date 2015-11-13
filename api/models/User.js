@@ -1086,35 +1086,35 @@ module.exports = {
                         village = z.village[0].name;
                     }
                     var name = z.firstname + " " + z.middlename + " " + z.lastname;
-                    if (z.sports.length > 0) {
+                    if (z.sports && z.sports.length > 0) {
                         _.each(z.sports, function(a) {
                             if (a != null) {
                                 sportsdata += a + ",";
                             }
                         });
                     }
-                    if (z.dance.length > 0) {
+                    if (z.dance && z.dance.length > 0) {
                         _.each(z.dance, function(a) {
                             if (a != null) {
                                 sportsdata += a + ",";
                             }
                         });
                     }
-                    if (z.quiz.length > 0) {
+                    if (z.quiz && z.quiz.length > 0) {
                         _.each(z.quiz, function(a) {
                             if (a != null) {
                                 sportsdata += a + ",";
                             }
                         });
                     }
-                    if (z.aquatics.length > 0) {
+                    if (z.aquatics && z.aquatics.length > 0) {
                         _.each(z.aquatics, function(a) {
                             if (a != null) {
                                 sportsdata += a + ",";
                             }
                         });
                     }
-                    if (z.volunteer.length > 0) {
+                    if (z.volunteer && z.volunteer.length > 0) {
                         _.each(z.volunteer, function(a) {
                             if (a != null) {
                                 sportsdata += a + ",";
@@ -1200,7 +1200,6 @@ module.exports = {
                                 });
                             }
                         });
-
                 });
             } else {
                 callback({
