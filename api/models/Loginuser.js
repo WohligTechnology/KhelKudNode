@@ -144,7 +144,9 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection("loginuser").find().toArray(function(err, found) {
+                db.collection("loginuser").find().sort({
+                    _id: 1
+                }).toArray(function(err, found) {
                     if (err) {
                         callback({
                             value: false
