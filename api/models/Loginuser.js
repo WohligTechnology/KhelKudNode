@@ -569,7 +569,7 @@ module.exports = {
         Loginuser.find(data, function(logrespo) {
             _.each(logrespo, function(y) {
 
-                if (y.firstname && y.firstame.length < 3) {
+                if (y.firstname && y.firstname.length < 3) {
                     Loginuser.delete(y, function(logdelete) {
                         i++;
                         console.log(i);
