@@ -77,6 +77,18 @@ module.exports = {
         };
         Loginuser.findlimited(req.body, callback);
     },
+    deleteusers: function(req, res) {
+        function callback(data) {
+            res.json(data);
+        };
+        Loginuser.deleteusers(req.body, callback);
+    },
+    deletesameusers: function(req, res) {
+        function callback(data) {
+            res.json(data);
+        };
+        Loginuser.deletesameusers(req.body, callback);
+    },
     countusers: function(req, res) {
         function callback(data) {
             res.json(data);

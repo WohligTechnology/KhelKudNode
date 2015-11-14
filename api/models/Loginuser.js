@@ -541,5 +541,45 @@ module.exports = {
                 });
             }
         });
+    },
+    deleteusers: function(data, callback) {
+        var i = 0;
+        Loginuser.find(data, function(logrespo) {
+            _.each(logrespo, function(y) {
+                if (y.mobileno.length != 10) {
+                    Loginuser.delete(y, function(logdelete) {
+                        i++;
+                        if (i == logrespo.length) {
+                            callback("Done");
+                        }
+                    });
+                } else {
+                    i++;
+                    if (i == logrespo.length) {
+                        callback("Done");
+                    }
+                }
+            });
+        });
+    },
+    deletesameusers: function(data, callback) {
+        db.collection('loginuser').ensureIndex({
+            name: 1
+        }, {
+            unique: true,
+            dropDups: true
+        }, function(err, index) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false,
+                    comment: "Error"
+                });
+            } else if (index) {
+                callback({
+                    value: true
+                });
+            }
+        });
     }
 };
