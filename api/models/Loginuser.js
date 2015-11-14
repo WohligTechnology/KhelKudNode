@@ -546,6 +546,7 @@ module.exports = {
         var i = 0;
         Loginuser.find(data, function(logrespo) {
             _.each(logrespo, function(y) {
+                console.log(y);
                 if (y.mobileno.length != 10) {
                     Loginuser.delete(y, function(logdelete) {
                         i++;
@@ -564,7 +565,7 @@ module.exports = {
     },
     deletesameusers: function(data, callback) {
         db.collection('loginuser').ensureIndex({
-            name: 1
+            firstname: 1
         }, {
             unique: true,
             dropDups: true
