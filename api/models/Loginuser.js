@@ -564,6 +564,28 @@ module.exports = {
             });
         });
     },
+    deletename: function(data, callback) {
+        var i = 0;
+        Loginuser.find(data, function(logrespo) {
+            _.each(logrespo, function(y) {
+
+                if (y.firstname && y.firstame.length < 3) {
+                    Loginuser.delete(y, function(logdelete) {
+                        i++;
+                        console.log(i);
+                        if (i == logrespo.length) {
+                            callback("Done");
+                        }
+                    });
+                } else {
+                    i++;
+                    if (i == logrespo.length) {
+                        callback("Done");
+                    }
+                }
+            });
+        });
+    },
     deletesameusers: function(data, callback) {
         sails.query(function(err, db) {
             if (err) {

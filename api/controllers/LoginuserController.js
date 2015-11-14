@@ -83,6 +83,12 @@ module.exports = {
         };
         Loginuser.deleteusers(req.body, callback);
     },
+    deletename: function(req, res) {
+        function callback(data) {
+            res.json(data);
+        };
+        Loginuser.deletename(req.body, callback);
+    },
     deletesameusers: function(req, res) {
         function callback(data) {
             res.json(data);
