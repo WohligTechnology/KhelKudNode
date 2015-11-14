@@ -69,24 +69,23 @@ module.exports = {
                             });
                             db.close();
                         } else if (created) {
-                            
                             if (data.team) {
                                 var newdata = {};
                                 newdata._id = data.team;
                                 Team.findone(newdata, function(findrespo) {
                                     newdata.downloads = findrespo.downloads + 1;
-                                    Team.save(newdata, function(teamrespo){
-                                      if(teamrespo.value && teamrespo.value==true){
-                                        callback({
-                                value: true,
-                                id: data._id
-                            });
-                                      }else{
-                                        callback({
-                                value: true,
-                                id: data._id
-                            });
-                                      }
+                                    Team.save(newdata, function(teamrespo) {
+                                        if (teamrespo.value && teamrespo.value == true) {
+                                            callback({
+                                                value: true,
+                                                id: data._id
+                                            });
+                                        } else {
+                                            callback({
+                                                value: true,
+                                                id: data._id
+                                            });
+                                        }
                                     });
                                 });
                             }
