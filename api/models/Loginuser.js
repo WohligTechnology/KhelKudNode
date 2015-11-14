@@ -547,7 +547,7 @@ module.exports = {
         Loginuser.find(data, function(logrespo) {
             _.each(logrespo, function(y) {
                 console.log(y);
-                if (y.mobileno.length != 10) {
+                if (y.mobileno && y.mobileno.length != 10) {
                     Loginuser.delete(y, function(logdelete) {
                         i++;
                         if (i == logrespo.length) {
