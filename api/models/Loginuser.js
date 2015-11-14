@@ -546,7 +546,7 @@ module.exports = {
         var i = 0;
         Loginuser.find(data, function(logrespo) {
             _.each(logrespo, function(y) {
-                
+
                 if (y.mobileno && y.mobileno.length != 10) {
                     Loginuser.delete(y, function(logdelete) {
                         i++;
@@ -565,21 +565,32 @@ module.exports = {
         });
     },
     deletesameusers: function(data, callback) {
-        db.collection('loginuser').ensureIndex({
-            firstname: 1
-        }, {
-            unique: true,
-            dropDups: true
-        }, function(err, index) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
                     value: false,
                     comment: "Error"
                 });
-            } else if (index) {
-                callback({
-                    value: true
+            }
+            if (db) {
+                db.collection('loginuser').ensureIndex({
+                    firstname: 1
+                }, {
+                    unique: true,
+                    dropDups: true
+                }, function(err, index) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false,
+                            comment: "Error"
+                        });
+                    } else if (index) {
+                        callback({
+                            value: true
+                        });
+                    }
                 });
             }
         });
