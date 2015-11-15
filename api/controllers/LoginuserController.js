@@ -119,5 +119,11 @@ module.exports = {
             res.json(data);
         };
       Loginuser.dropindex(req.body, callback);
+    },
+    getindex:function(req,res){
+      function callback(data) {
+            res.json(data);
+        };
+      Loginuser.getindex(req.body, callback);
     }
 };
