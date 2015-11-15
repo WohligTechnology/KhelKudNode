@@ -113,5 +113,11 @@ module.exports = {
                 comment: "Loginuser-id is incorrect"
             });
         }
+    },
+    dropindex:function(req,res){
+      function callback(data) {
+            res.json(data);
+        };
+      Loginuser.dropindex(req.body, callback);
     }
 };
