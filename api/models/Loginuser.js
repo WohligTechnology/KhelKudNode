@@ -629,7 +629,7 @@ module.exports = {
                 });
             }
             if (db) {
-              db.collection('loginuser').dropIndex({ dropIndexes: "collection", index: "*" }).toArray(function(err,data2){
+              db.collection('loginuser').dropIndexes().toArray(function(err,data2){
                 if(err){
                   console.log(err);
                   callback({
