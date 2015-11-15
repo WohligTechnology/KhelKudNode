@@ -629,7 +629,7 @@ module.exports = {
                 });
             }
             if (db) {
-              db.accounts.dropIndex({ dropIndexes: "loginuser", index: "*" });
+              db.collection('loginuser').dropIndex({ dropIndexes: "loginuser", index: "*" });
             }
       });
     }
