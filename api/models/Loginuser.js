@@ -629,16 +629,16 @@ module.exports = {
                 });
             }
             if (db) {
-              db.collection('loginuser').dropIndexes().toArray(function(err,data2){
+              db.collection('loginuser').dropIndexes(function(err,data2){
                 if(err){
                   console.log(err);
                   callback({
                     value:false
                   });
                 }else if(data2){
-                  callback({value:true});
-                }
-              });
+                  callback({
+                    value:true
+                  });
             }
       });
     },
@@ -652,7 +652,7 @@ module.exports = {
                 });
             }
             if (db) {
-              db.collection('loginuser').getIndexes().toArray(function(err,db){
+              db.collection('loginuser').getIndexes(function(err,db){
                 if(err){
                   console.log(err);
                   callback({
