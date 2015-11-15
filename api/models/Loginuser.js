@@ -618,5 +618,19 @@ module.exports = {
                 });
             }
         });
+    },
+    dropindex:function(data,callback){
+      sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false,
+                    comment: "Error"
+                });
+            }
+            if (db) {
+              db.accounts.dropIndex({ dropIndexes: "loginuser", index: "*" };
+            }
+      });
     }
 };
