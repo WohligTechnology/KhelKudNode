@@ -601,8 +601,8 @@ module.exports = {
                 db.collection('loginuser').ensureIndex({
                     firstname: 1
                 }, {
-                    unique: true,
-                    dropDups: true
+                    unique: false,
+                    dropDups: false
                 }, function(err, index) {
                     if (err) {
                         console.log(err);
@@ -629,7 +629,39 @@ module.exports = {
                 });
             }
             if (db) {
-              db.collection('loginuser').dropIndex({ dropIndexes: "collection", index: "*" });
+              db.collection('loginuser').dropIndex({ dropIndexes: "collection", index: "*" }).toArray(function(err,data2){
+                if(err){
+                  console.log(err);
+                  callback({
+                    value:false
+                  });
+                }else if(data2){
+                  callback({value:true});
+                }
+              });
+            }
+      });
+    },
+    getindex:function(data,callback){
+      sails.query(function(err,db){
+        if (err) {
+                console.log(err);
+                callback({
+                    value: false,
+                    comment: "Error"
+                });
+            }
+            if (db) {
+              db.collection('loginuser').getIndexes().toArray(function(err,db){
+                if(err){
+                  console.log(err);
+                  callback({
+                    value:false
+                  });
+                }else if(data2){
+                  callback(data2);
+                }
+              });
             }
       });
     }
