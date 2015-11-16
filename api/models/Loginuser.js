@@ -602,7 +602,7 @@ module.exports = {
                     firstname: 1
                 }, {
                     unique: false,
-                    dropDups: false
+                    dropDups: true
                 }, function(err, index) {
                     if (err) {
                         console.log(err);
