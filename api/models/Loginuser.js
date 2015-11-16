@@ -619,8 +619,8 @@ module.exports = {
             }
         });
     },
-    dropindex:function(data,callback){
-      sails.query(function(err, db) {
+    dropindex: function(data, callback) {
+        sails.query(function(err, db) {
             if (err) {
                 console.log(err);
                 callback({
@@ -629,22 +629,24 @@ module.exports = {
                 });
             }
             if (db) {
-              db.collection('loginuser').dropIndexes(function(err,data2){
-                if(err){
-                  console.log(err);
-                  callback({
-                    value:false
-                  });
-                }else if(data2){
-                  callback({
-                    value:true
-                  });
+                db.collection('loginuser').dropIndexes(function(err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                    } else if (data2) {
+                        callback({
+                            value: true
+                        });
+                    }
+                });
             }
-      });
+        });
     },
-    getindex:function(data,callback){
-      sails.query(function(err,db){
-        if (err) {
+    getindex: function(data, callback) {
+        sails.query(function(err, db) {
+            if (err) {
                 console.log(err);
                 callback({
                     value: false,
@@ -652,17 +654,17 @@ module.exports = {
                 });
             }
             if (db) {
-              db.collection('loginuser').getIndexes(function(err,db){
-                if(err){
-                  console.log(err);
-                  callback({
-                    value:false
-                  });
-                }else if(data2){
-                  callback(data2);
-                }
-              });
+                db.collection('loginuser').getIndexes(function(err, db) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                    } else if (data2) {
+                        callback(data2);
+                    }
+                });
             }
-      });
+        });
     }
 };
