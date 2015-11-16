@@ -654,7 +654,7 @@ module.exports = {
                 });
             }
             if (db) {
-                db.collection('loginuser').indexInformation(function(err, db) {
+                db.collection('loginuser').indexInformation(function(err, data2) {
                     if (err) {
                         console.log(err);
                         callback({
