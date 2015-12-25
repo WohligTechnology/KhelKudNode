@@ -242,10 +242,10 @@ module.exports = {
             category: data.category,
             age: data.age
         };
-        if (data.category != "") {
+        if (data.category == "") {
             delete matchobj.category;
         }
-        if (data.age != "") {
+        if (data.age == "") {
             delete matchobj.age;
         }
         sails.query(function(err, db) {
@@ -256,6 +256,7 @@ module.exports = {
                 });
             }
             if (db) {
+                console.log(matchobj);
                 db.collection("winner").find(matchobj).toArray(function(err, data2) {
                     if (err) {
                         console.log(err);
