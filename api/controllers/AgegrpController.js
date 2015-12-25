@@ -5,7 +5,7 @@ module.exports = {
                 agegrp();
             } else {
                 res.json({
-                    value: "false",
+                    value: false,
                     comment: "Agegrp-id is incorrect"
                 });
             }
@@ -28,7 +28,7 @@ module.exports = {
             Agegrp.delete(req.body, print);
         } else {
             res.json({
-                value: "false",
+                value: false,
                 comment: "Agegrp-id is incorrect"
             });
         }
@@ -47,7 +47,7 @@ module.exports = {
             Agegrp.findone(req.body, print);
         } else {
             res.json({
-                value: "false",
+                value: false,
                 comment: "Agegrp-id is incorrect"
             });
         }
@@ -60,7 +60,7 @@ module.exports = {
             Agegrp.findgrp(req.body, print);
         } else {
             res.json({
-                value: "false",
+                value: false,
                 comment: "Please provide Event"
             });
         }
