@@ -236,7 +236,7 @@ module.exports = {
             });
         });
     },
-    findWinners: function(req, res) {
+    findWinners: function(data, callback) {
         var matchobj = {
             event: data.event,
             category: data.category,
