@@ -1,0 +1,17 @@
+{"_id":{"$oid":"567d354dbfd93bdc121e21e7"},"age":[{"age":"8-12"},{"age":"13-16"},{"age":"17-25"},{"age":"26-35"},{"age":"35+"}],"category":[{"category":"MALE"},{"category":"FEMALE"}],"event":"Triathlon"}
+{"_id":{"$oid":"567d363dbfd93bdc121e21e9"},"age":[{"age":"8-12"},{"age":"13-16"}],"category":[{"category":"MALE"},{"category":"FEMALE"}],"event":"3 legged"}
+{"_id":{"$oid":"567d3664bfd93bdc121e21ea"},"age":[{"age":"17-25"},{"age":"26-35"},{"age":"35+"}],"category":[{"category":"MALE"},{"category":"FEMALE"}],"event":"4 legged"}
+{"_id":{"$oid":"567d3693bfd93bdc121e21eb"},"age":[{"age":"8-12"},{"age":"13-16"},{"age":"17-25"},{"age":"26-35"},{"age":"35+"}],"category":[],"event":"Mixed Relay"}
+{"_id":{"$oid":"567d36bdbfd93bdc121e21ec"},"age":[{"age":"U-16"},{"age":"16+"}],"category":[{"category":"MALE"},{"category":"FEMALE"}],"event":"Tug Of War"}
+{"_id":{"$oid":"567d36ddbfd93bdc121e21ed"},"age":[{"age":"8-10"},{"age":"11-13"}],"category":[],"event":"Skating"}
+{"_id":{"$oid":"567d36efbfd93bdc121e21ee"},"age":[],"category":[{"category":"MALE"},{"category":"FEMALE"}],"event":"Kho-Kho"}
+{"_id":{"$oid":"567d36fcbfd93bdc121e21ef"},"age":[],"category":[],"event":"Musical Station"}
+{"_id":{"$oid":"567d370cbfd93bdc121e21f0"},"age":[],"category":[],"event":"Khatron Ke Khiladi"}
+{"_id":{"$oid":"567d3716bfd93bdc121e21f1"},"age":[],"category":[],"event":"Lagori"}
+{"_id":{"$oid":"567d3723bfd93bdc121e21f2"},"age":[],"category":[],"event":"Throw Ball"}
+{"_id":{"$oid":"567d3733bfd93bdc121e21f3"},"age":[],"category":[],"event":"Handminton"}
+{"_id":{"$oid":"567d3744bfd93bdc121e21f4"},"age":[],"category":[{"category":"MALE"},{"category":"FEMALE"}],"event":"Bucket Ball"}
+{"_id":{"$oid":"567d379bbfd93bdc121e21f5"},"age":[{"age":"8-12"},{"age":"13-18"},{"age":"19-25"},{"age":"26-35"},{"age":"36-50"},{"age":"51+"},{"age":"CORE TEAM"}],"category":[],"event":"Quiz"}
+{"_id":{"$oid":"567d37e7bfd93bdc121e21f6"},"age":[],"category":[],"event":"Dance"}
+{"_id":{"$oid":"567d37eebfd93bdc121e21f7"},"age":[],"category":[],"event":"Street Play"}
+{"_id":{"$oid":"567d37f4bfd93bdc121e21f8"},"age":[],"category":[],"event":"Cycling"}
