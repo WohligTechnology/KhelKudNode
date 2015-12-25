@@ -256,7 +256,6 @@ module.exports = {
                 });
             }
             if (db) {
-                console.log(matchobj);
                 db.collection("winner").find(matchobj).toArray(function(err, data2) {
                     if (err) {
                         console.log(err);
