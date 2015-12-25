@@ -52,6 +52,19 @@ module.exports = {
             });
         }
     },
+    findgrp: function(req, res) {
+        if (req.body.event && req.body.event != "") {
+            var print = function(data) {
+                res.json(data);
+            }
+            Agegrp.findgrp(req.body, print);
+        } else {
+            res.json({
+                value: "false",
+                comment: "Please provide Event"
+            });
+        }
+    },
     findlimited: function(req, res) {
         function callback(data) {
             res.json(data);

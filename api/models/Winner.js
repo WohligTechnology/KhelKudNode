@@ -118,7 +118,7 @@ module.exports = {
 
                 function callbackfunc1() {
                     db.collection("winner").count({
-                        name: {
+                        event: {
                             '$regex': check
                         }
                     }, function(err, number) {
@@ -143,7 +143,7 @@ module.exports = {
 
                     function callbackfunc() {
                         db.collection("winner").find({
-                            name: {
+                            event: {
                                 '$regex': check
                             }
                         }).skip(pagesize * (pagenumber - 1)).limit(pagesize).toArray(function(err, found) {
@@ -234,6 +234,47 @@ module.exports = {
                     db.close();
                 }
             });
+        });
+    },
+    findWinners: function(req, res) {
+        var matchobj = {
+            event: data.event,
+            category: data.category,
+            age: data.age
+        };
+        if (data.category != "") {
+            delete matchobj.category;
+        }
+        if (data.age != "") {
+            delete matchobj.age;
+        }
+        sails.query(function(err, db) {
+            if (err) {
+                console.log(err);
+                callback({
+                    value: false
+                });
+            }
+            if (db) {
+                db.collection("winner").find(matchobj).toArray(function(err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback({
+                            value: false
+                        });
+                        db.close();
+                    } else if (data2 && data2[0]) {
+                        callback(data2[0]);
+                        db.close();
+                    } else {
+                        callback({
+                            value: false,
+                            comment: "No data found"
+                        });
+                        db.close();
+                    }
+                });
+            }
         });
     }
 };

@@ -52,6 +52,19 @@ module.exports = {
             });
         }
     },
+    findWinners: function(req, res) {
+        if (req.body.event && req.body.event != "") {
+            var print = function(data) {
+                res.json(data);
+            }
+            Winner.findWinners(req.body, print);
+        } else {
+            res.json({
+                value: "false",
+                comment: "Winner-id is incorrect"
+            });
+        }
+    },
     findlimited: function(req, res) {
         function callback(data) {
             res.json(data);
