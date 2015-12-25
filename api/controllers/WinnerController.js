@@ -5,7 +5,7 @@ module.exports = {
                 winner();
             } else {
                 res.json({
-                    value: "false",
+                    value: false,
                     comment: "Winner-id is incorrect"
                 });
             }
@@ -28,7 +28,7 @@ module.exports = {
             Winner.delete(req.body, print);
         } else {
             res.json({
-                value: "false",
+                value: false,
                 comment: "Winner-id is incorrect"
             });
         }
@@ -47,7 +47,7 @@ module.exports = {
             Winner.findone(req.body, print);
         } else {
             res.json({
-                value: "false",
+                value: false,
                 comment: "Winner-id is incorrect"
             });
         }
@@ -60,7 +60,7 @@ module.exports = {
             Winner.findWinners(req.body, print);
         } else {
             res.json({
-                value: "false",
+                value: false,
                 comment: "Winner-id is incorrect"
             });
         }
